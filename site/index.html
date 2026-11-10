@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Konik Hesap">
+<meta name="description" content="Konik alın boyu, toplam boy ve teknik resimden AI ölçü aktarımı.">
+
+<title>Konik Hesap v4.1 - Torna Ölçüleri</title>
+<style>
+:root { color-scheme: dark; --bg:#0c1324;--card:#172338;--card2:#1d2b43;--line:#35445c;--ink:#f5f7fb;--muted:#adbdd2;--blue:#82bcff;--accent:#3b82f6;--red:#fca5a5;}
+*{box-sizing:border-box}html{min-height:100%}body{margin:0;padding:20px 14px 32px;padding-bottom:max(28px,env(safe-area-inset-bottom));padding-top:max(20px,env(safe-area-inset-top));background:radial-gradient(ellipse at top,#213452 0%,#0c1324 65%);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink)}
+main{max-width:520px;margin:auto}.eyebrow{color:var(--blue);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}.head h1{font-size:27px;line-height:1.15;letter-spacing:-.7px;margin:9px 0 8px}.head p{margin:0 0 20px;color:var(--muted);font-size:14px}
+.card{padding:18px;border-radius:19px;background:rgba(23,35,56,.97);border:1px solid var(--line);margin-bottom:14px;box-shadow:0 8px 30px #07101d55}.card h2{font-size:15px;margin:0 0 14px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{min-width:0}.field label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:7px}.input-wrap{position:relative}.input-wrap input{width:100%;padding:13px 40px 13px 12px;border-radius:11px;border:1px solid #60728e;background:#0c1628;color:#fff;font-size:23px;font-weight:650;outline:none}.input-wrap input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #3b82f633}.input-wrap small{position:absolute;right:12px;top:15px;color:#a4b2c9;font-size:15px}.help{color:var(--muted);font-size:12px;margin:11px 0 0}.optional{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}.optional .input-wrap input{font-size:19px}.results{background:linear-gradient(140deg,#1e4274,#173052);border-color:#4a7bba}.results .kicker{color:#b7d5fa;font-size:12px;font-weight:750;letter-spacing:.45px}.big{font-size:47px;line-height:1.2;font-weight:800;letter-spacing:-1.1px;margin:6px 0}.big span{font-size:20px;font-weight:650;letter-spacing:0;color:#cbdffb}.desc{color:#c9def7;font-size:13px}.minor{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #ffffff29;margin-top:16px;padding-top:12px;font-size:13px;color:#dcecff;gap:8px}.minor strong{font-size:18px}.minor.hidden{display:none}.error{color:var(--red);font-size:14px;display:none}.actions{display:flex;gap:10px;margin-top:15px}button{border-radius:12px;border:1px solid #60728e;background:#233956;color:#f3f8ff;padding:11px 15px;font-size:14px;font-weight:650;cursor:pointer;flex:1}button:active{transform:scale(.98)}button.primary{background:#3b82f6;border-color:#3b82f6;color:white}svg{width:100%;height:auto;display:block}svg text{font-family:Arial,sans-serif}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:#101c31;border-radius:10px;padding:12px;color:#d8e5f7;overflow-wrap:anywhere}.bottom{color:#a3b3c8;font-size:12px;text-align:center;padding:3px 10px 0}.subline{font-size:12px;color:#b2c8e2;margin-top:5px} @media(max-width:360px){.big{font-size:40px}.head h1{font-size:24px}.input-wrap input{font-size:20px}}
+
+/* v2 - çizimlerde uçtan boy hesabı */
+.tabbar{display:flex;gap:8px;margin:0 0 15px;padding:5px;border:1px solid var(--line);border-radius:15px;background:#111d31}
+.tabbar .tab{flex:1;padding:12px 5px;font-size:12px;border-radius:11px;border:0;background:transparent;color:#c2d1e6;line-height:1.3}
+.tabbar .tab.active{background:#397fd1;color:white;box-shadow:0 3px 14px #0a1c3488}
+[hidden]{display:none!important}
+.tip-intro{font-size:13px;color:var(--muted);margin:-4px 0 15px}
+.tip-inputs{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.tip-inputs .field:last-child{grid-column:1/-1}
+.tip-inputs .input-wrap input{font-size:20px}
+.numberline{border-top:1px solid #ffffff2b;display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:10px 0}
+.numberline:first-of-type{border-top:0}
+.numberline strong{font-size:21px;white-space:nowrap}
+.numberline .name{font-size:13px;color:#dce9fb}
+.numberline .name small{display:block;color:#b8c8dc;font-size:11px;margin-top:1px}
+.numberline.highlight{background:#2a5387;margin:10px -9px;padding:11px 9px;border:1px solid #6fa3e6;border-radius:11px}
+.numberline.highlight strong{color:#fff}
+.numberline.secondary{opacity:.96}
+.tip-result-head{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.tip-result-head .micro{font-size:11px;color:#c2d9f8;text-align:right}
+.detail-note{font-size:12px;color:#a9bdd8;line-height:1.5;margin:8px 0 0}
+.preset{font-size:12px;padding:6px 10px;border-radius:7px;border-color:#557fae;flex:none}
+.tol-note{border-left:3px solid #e8ae65;background:#2c2b30;padding:10px 12px;border-radius:5px;color:#ffe3b9;font-size:12px;line-height:1.5;margin:12px 0 0}
+.hintlist{padding:0;margin:12px 0 0;list-style:none;color:#b7c9e0;font-size:12px}
+.hintlist li{margin-top:5px}
+@media(max-width:360px){.numberline strong{font-size:18px}.tabbar .tab{font-size:12px}}
+
+/* v3 - sadece verilen B1 ile toplam boy hesabı */
+.tip-inputs{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tip-inputs .field:nth-child(3){grid-column:1/-1}
+.tip-inputs .field:nth-child(3) input{font-size:24px}
+.result-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 0}
+.result-chip{padding:12px;background:#122b4a;border:1px solid #42658f;border-radius:12px;min-width:0}
+.result-chip label{display:block;font-size:11px;color:#b9d5f1;margin-bottom:5px;line-height:1.35}
+.result-chip strong{display:block;font-size:19px;white-space:nowrap}
+#tipError{margin-top:8px}
+#tipFirst{font-variant-numeric:tabular-nums}
+.formula-value{color:#a7f3d0;font-weight:750;font-size:16px;margin-top:11px}
+.tip-note{border-left:3px solid #f1bb72;padding-left:12px;margin-top:12px;color:#c7d9ed;font-size:12px;line-height:1.5}
+@media(max-width:360px){.result-chip strong{font-size:16px}.tip-inputs .field:nth-child(3) input{font-size:21px}}
+
+/* v4 kamera / teknik resim tarama */
+.scanButtons{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}
+.scanButtons button{margin:0;min-width:0;padding:13px 7px}
+.scanStatus{padding:11px 13px;background:#111d31;border:1px solid #425673;color:#cde3fe;border-radius:10px;font-size:13px;line-height:1.45;margin:11px 0}
+.scanStatus.warn{background:#3c2f22;border-color:#9b763f;color:#ffe0b2}
+.scanStatus.good{background:#183e3c;border-color:#368778;color:#b1f7e8}
+.scanPreview{display:block;max-width:100%;max-height:350px;object-fit:contain;margin:auto;border-radius:10px;border:1px solid #435c79;background:#0a1424}
+.scanImageWrap{background:#0d1929;border-radius:13px;padding:8px}
+.scanReview .input-wrap input{font-size:19px}
+.scanReview .field:last-child{grid-column:1/-1}
+.scanTag{font-size:11px;color:#b8ddff;margin-top:7px}
+.scanExplanation{padding:12px 13px;border-left:3px solid #71b2ff;border-radius:6px;background:#152f4d;font-size:13px;line-height:1.5;color:#d6e6fa;overflow-wrap:anywhere}
+.scanWarnings{font-size:13px;color:#ffe0b2;margin:9px 0 0;padding-left:20px}
+.scanConsent{display:flex;align-items:flex-start;gap:10px;margin:12px 0;font-size:12px;color:#c6d6ea}
+.scanConsent input{width:21px;height:21px;flex:none;accent-color:#3b82f6;margin-top:1px}
+.scanSecret{width:100%;background:#101c31;border:1px solid #60728e;border-radius:10px;color:white;padding:12px;font-size:16px}
+.scanPrimary{display:block;width:100%;font-size:16px;padding:15px;margin-top:12px}
+.scanTiny{font-size:12px;color:#acbed6}
+.scanFooter{font-size:12px;color:#cbdaf0;padding:11px 13px;background:#122b45;border-radius:10px}
+.scanActions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.scanActions button{min-width:0}
+.scanHidden{display:none!important}
+@media(max-width:375px){.tabbar .tab{font-size:11px;padding:11px 3px}.scanButtons button{font-size:12px}}
+</style>
+</head>
+<body>
+<main>
+<header class="head"><div class="eyebrow">Torna • CNC • Geometri</div><h1>Konik Hesaplayıcı</h1><p>Konik boyu ve uçtan toplam boy hesapla; teknik resmi kamerayla tara. Hesaplamalar çevrimdışı, yapay zekâ taraması internetle çalışır.</p></header>
+<nav class="tabbar" role="tablist" aria-label="Hesaplama seçimi">
+<button class="tab active" id="tabCone" type="button" role="tab" aria-controls="calcCone" aria-selected="true">Konik alın boyu</button>
+<button class="tab" id="tabTip" type="button" role="tab" aria-controls="calcTip" aria-selected="false">Toplam boy</button>
+<button class="tab" id="tabScan" type="button" role="tab" aria-controls="calcScan" aria-selected="false">📷 Resim tara</button>
+</nav>
+<div id="calcCone" role="tabpanel" aria-labelledby="tabCone">
+<section class="card" aria-label="Ölçüler">
+<h2>Ölçüleri gir</h2>
+<div class="fields">
+<div class="field"><label for="d">Çap (D)</label><div class="input-wrap"><input id="d" type="text" inputmode="decimal" value="23" autocomplete="off" aria-label="Çap milimetre"><small>mm</small></div></div>
+<div class="field"><label for="a">Toplam uç açısı (A)</label><div class="input-wrap"><input id="a" type="text" inputmode="decimal" value="132" autocomplete="off" aria-label="Toplam uç açısı derece"><small>°</small></div></div>
+</div>
+<p class="help">Önemli: Açının yarısını değil, çizimde yazan <b>toplam koni açısını</b> gir. Örnek: 132°.</p>
+<div class="optional"><div class="field"><label for="t">Omuzdan uca toplam boy (isteğe bağlı)</label><div class="input-wrap"><input id="t" type="text" inputmode="decimal" value="35" autocomplete="off" aria-label="Omuzdan uca toplam boy milimetre"><small>mm</small></div></div></div>
+</section>
+<section class="card results" aria-live="polite">
+<div class="kicker">KONİK ALIN BOYU (L)</div><div class="big" id="result">5,120 <span>mm</span></div><div class="desc">Koninin başladığı çap düzleminden uç noktasına eksenel mesafe</div>
+<div class="minor" id="straightRow"><span>Düz silindirik boy</span><strong id="straight">29,880 mm</strong></div><div class="subline" id="straightNote">Toplam boy − konik alın boyu</div>
+<div class="error" id="error" role="alert">Geçerli çap ve 0° ile 180° arasında açı gir.</div>
+<div class="actions"><button class="primary" type="button" id="copy">Sonucu kopyala</button><button type="button" id="reset">Örneğe dön</button></div>
+</section>
+<section class="card" aria-label="Geometri çizimi"><h2>Ölçülerin şematik gösterimi</h2>
+<svg viewBox="0 0 350 195" role="img" aria-label="Çapı D olan silindirin A toplam açılı konik ucunda L eksenel uzunluğu">
+<path d="M56 38 H212 L281 100 L212 162 H56 Z" stroke="#adc3df" stroke-width="1.7" fill="#263e59"/>
+<path d="M212 38 L281 100 L212 162 Z" fill="#367acc55" stroke="#7ab7ff" stroke-width="2"/>
+<path d="M28 100 H312" stroke="#c6d4e0" stroke-dasharray="6 5" opacity=".65"/>
+<path d="M212 38 V162" stroke="#9fb4cf" stroke-dasharray="4 4"/>
+<path d="M36 38 V162 M32 43 L36 38 L40 43 M32 157 L36 162 L40 157" stroke="#d9e8fa" stroke-width="1.3" fill="none"/>
+<path d="M212 179 H281 M217 175 L212 179 L217 183 M276 175 L281 179 L276 183" stroke="#82bcff" stroke-width="1.4" fill="none"/>
+<path d="M251 73 A39 39 0 0 0 251 127" stroke="#f2bc6b" stroke-width="1.5" fill="none"/>
+<text x="24" y="101" transform="rotate(-90 24 101)" text-anchor="middle" font-size="13" fill="#d9e8fa" id="diagramD">Ø23</text>
+<text x="246" y="94" text-anchor="middle" font-size="13" fill="#f2bc6b" id="diagramA">132°</text>
+<text x="247" y="172" text-anchor="middle" font-size="15" font-weight="bold" fill="#82bcff">L</text>
+<text x="115" y="29" text-anchor="middle" font-size="12" fill="#cad8e7">Silindirik kısım</text>
+<text x="303" y="102" font-size="12" fill="#cad8e7">Uç</text>
+</svg>
+</section>
+<section class="card"><h2>Hesaplama formülü</h2><div class="formula">L = (D ÷ 2) ÷ tan(A ÷ 2)</div><p class="help" id="example">L = 11,5 ÷ tan(66°) = 5,120 mm</p></section>
+
+</div>
+<div id="calcTip" role="tabpanel" aria-labelledby="tabTip" hidden>
+<section class="card" aria-label="Toplam boy ölçüleri">
+  <h2>Uçtan ilk omuza toplam boy hesabı</h2>
+  <p class="tip-intro">Teknik resimde <b>B1</b> veriliyorsa sadece çapı (D), toplam uç açısını (A) ve B1 ölçüsünü gir. <b>L</b> otomatik hesaplanır; <b>Toplam Boy = L + B1</b>.</p>
+  <div class="tip-inputs">
+    <div class="field"><label for="td">Uç çapı (D)</label><div class="input-wrap"><input id="td" type="text" inputmode="decimal" value="4,50" autocomplete="off" aria-label="Uç çapı milimetre"><small>mm</small></div></div>
+    <div class="field"><label for="ta">Toplam uç açısı (A)</label><div class="input-wrap"><input id="ta" type="text" inputmode="decimal" value="140" autocomplete="off" aria-label="Toplam uç açısı derece"><small>°</small></div></div>
+    <div class="field"><label for="tf">Resimde verilen düz boy (B1)</label><div class="input-wrap"><input id="tf" type="text" inputmode="decimal" value="5,50" autocomplete="off" aria-label="Konik başlangıcından ilk omuza B1 boyu milimetre"><small>mm</small></div></div>
+  </div>
+  <p class="help">B1, koninin bittiği ØD düzleminden ilk omuza kadar olan ölçüdür. L değerini ayrıca bilmen veya girmen gerekmez.</p>
+  <div class="actions"><button type="button" id="tipReset">Örnek ölçüleri getir</button></div>
+</section>
+<section class="card results" aria-live="polite" aria-label="Toplam boy sonucu">
+  <div class="kicker">TOPLAM BOY</div>
+  <div class="big" id="tipFirst">6,319 <span>mm</span></div>
+  <div class="desc">Sivri uçtan ilk omuza kadar olan eksenel mesafe</div>
+  <div class="result-summary">
+    <div class="result-chip"><label>Hesaplanan konik payı (L)</label><strong id="tipOffset">0,819 mm</strong></div>
+    <div class="result-chip"><label>Resimde verilen boy (B1)</label><strong id="tipB1">5,500 mm</strong></div>
+  </div>
+  <div class="error" id="tipError" role="alert"></div>
+  <div class="actions"><button class="primary" type="button" id="tipCopy">Hesabı kopyala</button></div>
+  <p class="tol-note">Sonuç nominal ölçülere göredir. Teknik resimdeki çap, açı ve B1 toleranslarını ayrıca kontrol et. CNC'de Z sıfırını ve işleme yönünü doğrula.</p>
+</section>
+<section class="card">
+  <h2>Hesaplamanın şeması</h2>
+  <svg viewBox="0 0 360 227" role="img" aria-label="Sivri uç, koni başlangıcı ve ilk omuz arasında L ve B1 ölçülerinin toplamını gösteren şema">
+   <path d="M28 95 L113 50 H303 V140 H113 Z" fill="#29445f" stroke="#a8bdd9" stroke-width="1.7"/>
+   <path d="M28 95 L113 50 V140 Z" fill="#3b82f65a" stroke="#82bcff" stroke-width="2.1"/>
+   <path d="M15 95 H340" stroke="#cbd9e9" stroke-dasharray="6 5" opacity=".5"/>
+   <path d="M28 145 V174 M113 146 V174 M303 145 V174" stroke="#8aa4c1" stroke-dasharray="4 3"/>
+   <path d="M28 168 H113 M35 164 L28 168 L35 172 M106 164 L113 168 L106 172" stroke="#eeb970" stroke-width="1.7" fill="none"/>
+   <path d="M113 168 H303 M120 164 L113 168 L120 172 M296 164 L303 168 L296 172" stroke="#b6d3ff" stroke-width="1.7" fill="none"/>
+   <path d="M28 204 H303 M35 200 L28 204 L35 208 M296 200 L303 204 L296 208" stroke="#7ce5c9" stroke-width="2" fill="none"/>
+   <text x="70" y="162" fill="#f9ce93" text-anchor="middle" font-size="13">L</text>
+   <text x="208" y="162" fill="#cfe4ff" text-anchor="middle" font-size="13">B1</text>
+   <text x="168" y="196" fill="#8bebd1" text-anchor="middle" font-size="12" font-weight="bold">TOPLAM BOY = L + B1</text>
+   <text x="28" y="77" fill="#f1c47e" font-size="12" text-anchor="middle">Uç</text>
+   <text x="113" y="40" fill="#dce9fa" font-size="11" text-anchor="middle">Koni başı</text>
+   <text x="303" y="40" fill="#dce9fa" font-size="11" text-anchor="middle">İlk omuz</text>
+  </svg>
+  <p class="detail-note">Şema temsilidir, ölçekli değildir. <b>L</b> sivri uçtan koni başlangıcına, <b>B1</b> koni başlangıcından ilk omuza ölçülür. Toplam boy sivri uçtan ilk omuza uzanır.</p>
+</section>
+<section class="card" aria-label="Formüller">
+  <h2>Hesaplama formülü</h2>
+  <div class="formula">L = (D ÷ 2) ÷ tan(A ÷ 2)<br>Toplam Boy = L + B1</div>
+  <p class="formula-value" id="tipFormula">0,819 + 5,500 = 6,319 mm</p>
+</section>
+</div>
+
+<div id="calcScan" role="tabpanel" aria-labelledby="tabScan" hidden>
+<section class="card">
+  <h2>📷 Teknik resim tara</h2>
+  <p class="tip-intro">Fotoğraf çek veya galeriden teknik resim seç. Gemini ölçüleri okumaya çalışır. <b>Hiçbir değer kontrolün olmadan hesaplayıcıya aktarılmaz.</b></p>
+  <div class="scanButtons">
+    <button class="primary" id="scanCameraBtn" type="button">📷 Fotoğraf çek</button>
+    <button id="scanGalleryBtn" type="button">▧ Galeriden seç</button>
+  </div>
+  <input id="scanCamera" type="file" accept="image/*" capture="environment" hidden>
+  <input id="scanGallery" type="file" accept="image/*" hidden>
+  <div id="scanPhotoArea" hidden>
+    <div class="scanImageWrap"><img class="scanPreview" id="scanPreview" alt="Seçilen teknik resim önizlemesi"></div>
+    <div class="actions"><button id="scanRotateLeft" type="button">↶ Sola çevir</button><button id="scanRotateRight" type="button">↷ Sağa çevir</button></div>
+    <p class="help" id="scanPhotoInfo"></p>
+  </div>
+  <div class="scanStatus" id="scanStatus" aria-live="polite">Önce bir teknik resim seç. Çizimin net ve ölçülerin okunaklı olması önemli.</div>
+  <label for="scanPin" class="scanTiny">Tarama şifresi (Netlify'da belirlediğin APP_SCAN_PIN, gizli)</label>
+  <input class="scanSecret" id="scanPin" type="password" autocomplete="off" placeholder="Tarama şifreni yaz">
+  <label class="scanConsent"><input type="checkbox" id="scanConsent"><span>Fotoğrafın analiz edilmek için Google Gemini'ye gönderilmesini kabul ediyorum. <b>Şirket içi veya gizli teknik çizimleri</b> yetkin yoksa yükleme. Ücretsiz API'de içerikler Google tarafından ürün geliştirmek için kullanılabilir.</span></label>
+  <button id="scanRun" type="button" class="primary scanPrimary" disabled>Yapay zekâ ile ölçüleri oku</button>
+  <p class="help">Bu işlem internet gerektirir. API anahtarı telefonuna veya bu sayfanın kaynak koduna yazılmaz; Netlify sunucu ayarlarında tutulur. Tarama şifresi sadece bu oturumda bellekte saklanır.</p>
+</section>
+<section class="card scanReview" id="scanReview" hidden>
+  <h2>Okunan ölçüleri kontrol et</h2>
+  <div id="scanExplanation" class="scanExplanation"></div>
+  <ul id="scanWarnings" class="scanWarnings"></ul>
+  <div class="fields" style="margin-top:13px">
+    <div class="field"><label for="scanD">Çap (D), mm</label><div class="input-wrap"><input id="scanD" type="text" inputmode="decimal" placeholder="Örn. 4,50"><small>mm</small></div></div>
+    <div class="field"><label for="scanA">Toplam açı (A)</label><div class="input-wrap"><input id="scanA" type="text" inputmode="decimal" placeholder="Örn. 140"><small>°</small></div></div>
+    <div class="field"><label for="scanB">Resimdeki düz boy (B1)</label><div class="input-wrap"><input id="scanB" type="text" inputmode="decimal" placeholder="Örn. 5,50"><small>mm</small></div></div>
+  </div>
+  <div class="scanTag" id="scanRef"></div>
+  <label class="scanConsent"><input type="checkbox" id="scanConfirmed"><span>Çapı, açıyı ve <b>B1'in koni başlangıç düzleminden ilk omuza</b> ölçüldüğünü teknik resimde kendim doğruladım.</span></label>
+  <div class="scanActions"><button type="button" id="scanToCone">Konik hesaplayıcıya aktar</button><button class="primary" type="button" id="scanToTip">Toplam boya aktar</button></div>
+  <div class="scanStatus" id="scanTransferInfo" aria-live="polite">Önce değerleri incele; emin değilsen düzelt.</div>
+  <p class="tol-note">Yapay zekâ milimetre, tolerans, 140° gibi açıları veya referans çizgilerini yanlış okuyabilir. Bu sonuç bir CNC işleme onayı değildir; ölçüleri çizim ve toleranslarla karşılaştır.</p>
+</section>
+<section class="card">
+  <h2>Yapay zekâ olmadan da çalışır</h2>
+  <p class="tip-intro">Fotoğrafı seçip büyüterek inceleyebilirsin. İnternet yoksa ölçüleri diğer iki hesaplama sekmesine elle girmen yeterli. Temel hesaplar çevrimdışı çalışır.</p>
+  <div class="scanFooter">Hesap mantığı: <b>L = (D/2) ÷ tan(A/2)</b> ve <b>Toplam Boy = L + B1</b>. B1'in başlangıcı başka bir yüzeyse bu formülü doğrudan uygulama.</div>
+</section>
+</div>
+<p class="bottom">Sayısal hesaplar cihaz üzerinde ve internetsiz çalışır; fotoğraftan yapay zekâ ile ölçü okuma internet gerektirir. CNC işleme öncesi teknik resmi, toleransları, Z sıfırını ve ölçü referanslarını doğrula.</p>
+</main>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const d=$('d'),a=$('a'),t=$('t'),result=$('result'),straight=$('straight'),straightRow=$('straightRow'),straightNote=$('straightNote'),error=$('error'),copy=$('copy');
+const parse=s=>{ const normalized=String(s).trim().replace(/\s/g,'').replace(',','.'); return normalized===''?NaN:Number(normalized); };
+const fmt=(num,digits=3)=>num.toLocaleString('tr-TR',{minimumFractionDigits:digits,maximumFractionDigits:digits});
+function update(){
+  const D=parse(d.value),A=parse(a.value),T=parse(t.value),hasT=t.value.trim()!=='';
+  const ok=Number.isFinite(D)&&D>0&&Number.isFinite(A)&&A>0&&A<180;
+  error.style.display=ok?'none':'block';result.style.display=ok?'block':'none';copy.disabled=!ok;
+  if(!ok){straightRow.classList.add('hidden');straightNote.style.display='none';$('example').textContent='Çap ve açı değerlerini kontrol et.';return;}
+  const L=(D/2)/Math.tan(A*Math.PI/360);
+  result.innerHTML=fmt(L)+' <span>mm</span>';
+  if(hasT&&Number.isFinite(T)&&T>=L){straightRow.classList.remove('hidden');straight.textContent=fmt(T-L)+' mm';straightNote.style.display='block';straightNote.textContent=fmt(T)+' − '+fmt(L)+' = '+fmt(T-L)+' mm';}
+  else{straightRow.classList.add('hidden');straightNote.style.display=hasT?'block':'none';straightNote.textContent=hasT?'Toplam boy, konik alın boyundan kısa olamaz.':'';}
+  $('diagramD').textContent='Ø'+fmt(D,Math.abs(D-Math.round(D))<0.0000001?0:2);
+  $('diagramA').textContent=fmt(A,Math.abs(A-Math.round(A))<0.0000001?0:2)+'°';
+  $('example').textContent='L = '+fmt(D/2,3)+' ÷ tan('+fmt(A/2,3)+'°) = '+fmt(L)+' mm';
+  try{localStorage.setItem('konik-v1',JSON.stringify({d:d.value,a:a.value,t:t.value}));}catch(e){}
+}
+try{const saved=JSON.parse(localStorage.getItem('konik-v1')||'null');if(saved&&typeof saved.d==='string'&&typeof saved.a==='string'&&typeof saved.t==='string'){d.value=saved.d;a.value=saved.a;t.value=saved.t;}}catch(e){}
+[d,a,t].forEach(el=>el.addEventListener('input',update));
+$('reset').addEventListener('click',()=>{d.value='23';a.value='132';t.value='35';update();d.focus();});
+copy.addEventListener('click',async()=>{const D=parse(d.value),A=parse(a.value),L=(D/2)/Math.tan(A*Math.PI/360);const output='Konik alın boyu: Ø'+fmt(D,3)+' mm, açı '+fmt(A,3)+'°, L = '+fmt(L)+' mm';try{await navigator.clipboard.writeText(output);copy.textContent='Kopyalandı ✓';setTimeout(()=>copy.textContent='Sonucu kopyala',1700);}catch(e){window.prompt('Sonucu kopyala:',output);}});
+update();
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', function () { navigator.serviceWorker.register('./service-worker.js').catch(function () {}); });
+}
+</script>
+
+<script>
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const tabCone=$('tabCone'),tabTip=$('tabTip'),tabScan=$('tabScan'),calcCone=$('calcCone'),calcTip=$('calcTip'),calcScan=$('calcScan');
+  function openTab(which){
+    if(!['cone','tip','scan'].includes(which))which='cone';
+    for(const [value,button,section] of [['cone',tabCone,calcCone],['tip',tabTip,calcTip],['scan',tabScan,calcScan]]){
+      const active=which===value;
+      section.hidden=!active;button.classList.toggle('active',active);
+      button.setAttribute('aria-selected',String(active));
+    }
+    try{localStorage.setItem('konik-tab-v2',which)}catch(e){}
+  }
+  window.konikOpenTab=openTab;
+  tabCone.addEventListener('click',()=>openTab('cone'));
+  tabTip.addEventListener('click',()=>openTab('tip'));
+  tabScan.addEventListener('click',()=>openTab('scan'));
+  try{openTab(localStorage.getItem('konik-tab-v2')||'cone')}catch(e){openTab('cone')}
+
+  const d=$('td'),a=$('ta'),b=$('tf'),fields=[d,a,b];
+  const parse=raw=>{const s=String(raw).trim().replace(/\s/g,'').replace(',','.');return s===''?NaN:Number(s)};
+  const fmt=(n)=>n.toLocaleString('tr-TR',{minimumFractionDigits:3,maximumFractionDigits:3});
+  let copyText='';
+  function update(){
+    const D=parse(d.value),A=parse(a.value),B1=parse(b.value);
+    const valid=Number.isFinite(D)&&D>0&&Number.isFinite(A)&&A>0&&A<180&&Number.isFinite(B1)&&B1>=0;
+    const message=$('tipError');
+    message.textContent=valid?'':'Çap sıfırdan büyük, açı 0° ile 180° arasında, B1 ise 0 veya pozitif olmalıdır.';
+    message.style.display=valid?'none':'block';
+    $('tipFirst').style.display=valid?'block':'none';
+    $('tipCopy').disabled=!valid;
+    if(!valid){$('tipOffset').textContent='—';$('tipB1').textContent='—';$('tipFormula').textContent='Ölçüleri kontrol et.';copyText='';return;}
+    const L=(D/2)/Math.tan(A*Math.PI/360);
+    const total=L+B1;
+    $('tipOffset').textContent=fmt(L)+' mm';
+    $('tipB1').textContent=fmt(B1)+' mm';
+    $('tipFirst').innerHTML=fmt(total)+' <span>mm</span>';
+    $('tipFormula').textContent=fmt(L)+' + '+fmt(B1)+' = '+fmt(total)+' mm';
+    copyText='TOPLAM BOY (Uçtan ilk omuza): '+fmt(total)+' mm\nÇap: Ø'+fmt(D)+' mm\nToplam uç açısı: '+fmt(A)+'°\nHesaplanan konik payı (L): '+fmt(L)+' mm\nVerilen düz boy (B1): '+fmt(B1)+' mm\nFormül: L + B1';
+    try{localStorage.setItem('konik-toplam-v3',JSON.stringify({d:d.value,a:a.value,b1:b.value}))}catch(e){}
+  }
+  try{
+    let saved=JSON.parse(localStorage.getItem('konik-toplam-v3')||'null');
+    if(!saved)saved=JSON.parse(localStorage.getItem('uc-referans-v2')||'null');
+    if(saved&&typeof saved.d==='string'&&typeof saved.a==='string'&&typeof saved.b1==='string'){
+      d.value=saved.d;a.value=saved.a;b.value=saved.b1;
+    }
+  }catch(e){}
+  fields.forEach(el=>el.addEventListener('input',update));
+  $('tipReset').addEventListener('click',()=>{d.value='4,50';a.value='140';b.value='5,50';update();});
+  $('tipCopy').addEventListener('click',async()=>{
+    if(!copyText)return;
+    try{await navigator.clipboard.writeText(copyText);$('tipCopy').textContent='Kopyalandı ✓';setTimeout(()=>$('tipCopy').textContent='Hesabı kopyala',1400)}
+    catch(e){window.prompt('Sonuçları kopyala:',copyText)}
+  });
+  update();
+})();
+</script>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+let originalImage=null,rotation=0,imageData=null,busy=false;
+const status=(s,type='')=>{const el=$('scanStatus');el.textContent=s;el.className='scanStatus '+type};
+const fmt=n=>Number(n).toLocaleString('tr-TR',{maximumFractionDigits:4});
+const parse=s=>{const v=String(s).trim().replace(/\s/g,'').replace(',','.');return v===''?NaN:Number(v)};
+function setState(){ $('scanRun').disabled=!imageData||busy; }
+async function loadFile(file){
+  if(!file)return;
+  if(!file.type.startsWith('image/')){status('Lütfen JPG, PNG veya HEIC/HEIF görüntüsü seç.', 'warn');return;}
+  $('scanReview').hidden=true;
+  if(originalImage){URL.revokeObjectURL(originalImage.url);originalImage=null;}
+  const url=URL.createObjectURL(file),img=new Image();
+  status('Fotoğraf hazırlanıyor...');
+  img.onload=()=>{
+    originalImage={img,url,name:file.name||'kamera fotoğrafı'};
+    rotation=0;
+    try{renderImage();}catch(e){status('Fotoğraf işlenemedi. JPG veya PNG olarak tekrar dene.','warn')}
+  };
+  img.onerror=()=>{URL.revokeObjectURL(url);status('Bu görüntü türü açılamadı. JPG veya PNG seç.','warn')};
+  img.src=url;
+}
+function renderImage(){
+  if(!originalImage)return;
+  const img=originalImage.img;
+  const turning=(rotation%180)!==0;
+  const sw=img.naturalWidth,sh=img.naturalHeight;
+  if(!sw||!sh)throw Error('Boş fotoğraf');
+  const maxSide=2300,scale=Math.min(1,maxSide/Math.max(sw,sh));
+  const tw=Math.round(sw*scale),th=Math.round(sh*scale);
+  const canvas=document.createElement('canvas');canvas.width=turning?th:tw;canvas.height=turning?tw:th;
+  const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)throw Error('Canvas desteklenmiyor');
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.translate(canvas.width/2,canvas.height/2);ctx.rotate(rotation*Math.PI/180);
+  ctx.drawImage(img,-tw/2,-th/2,tw,th);
+  imageData=canvas.toDataURL('image/jpeg',0.87);
+  $('scanPreview').src=imageData;
+  $('scanPhotoArea').hidden=false;
+  $('scanPhotoInfo').textContent='Gönderilecek görüntü: '+canvas.width+' × '+canvas.height+' px (sıkıştırıldı). Gerekirse döndür.';
+  status('Fotoğraf hazır. Tarama şifreni girip onay kutusunu işaretleyerek analize başlayabilirsin.');
+  setState();
+}
+$('scanCameraBtn').addEventListener('click',()=>$('scanCamera').click());
+$('scanGalleryBtn').addEventListener('click',()=>$('scanGallery').click());
+$('scanCamera').addEventListener('change',e=>{loadFile(e.target.files?.[0]);e.target.value='' });
+$('scanGallery').addEventListener('change',e=>{loadFile(e.target.files?.[0]);e.target.value='' });
+$('scanRotateLeft').addEventListener('click',()=>{rotation=(rotation+270)%360;renderImage()});
+$('scanRotateRight').addEventListener('click',()=>{rotation=(rotation+90)%360;renderImage()});
+try{$('scanPin').value=sessionStorage.getItem('konik-pin-v4')||'';}catch(e){}
+function showResults(r){
+  const value=n=>n!==null&&n!==undefined&&Number.isFinite(Number(n))?fmt(Number(n)):'';
+  $('scanD').value=value(r.diameter_mm);$('scanA').value=value(r.total_angle_deg);$('scanB').value=value(r.b1_mm);
+  const ref={cone_base:'Koni başlangıcından omuza',tip:'Uç noktasından ölçülmüş',other:'Farklı bir referansa ait',unclear:'Başlangıç referansı belirsiz'};
+  $('scanRef').textContent='B1 referansı (AI tahmini): '+(ref[r.b1_reference]||'Belirsiz')+' • Güven: '+({high:'yüksek',medium:'orta',low:'düşük'}[r.confidence]||'belirsiz');
+  $('scanExplanation').textContent=r.explanation||'Ölçüler otomatik okundu; lütfen çizimi kontrol et.';
+  const ul=$('scanWarnings');ul.textContent='';
+  (Array.isArray(r.warnings)?r.warnings:[]).slice(0,5).forEach(w=>{const li=document.createElement('li');li.textContent=String(w);ul.append(li)});
+  $('scanConfirmed').checked=false;
+  $('scanReview').hidden=false;
+  $('scanTransferInfo').textContent='Ölçüleri resimle karşılaştırıp referans onay kutusunu işaretle.';
+  $('scanReview').scrollIntoView({behavior:'smooth',block:'start'});
+}
+$('scanRun').addEventListener('click',async()=>{
+  if(busy||!imageData)return;
+  const pin=$('scanPin').value.trim();
+  if(!pin){status('Önce Netlify için belirlediğin tarama şifresini yaz.','warn');return}
+  if(!$('scanConsent').checked){status('Fotoğrafın Google Gemini hizmetine gönderilmesine onay vermen gerekiyor.','warn');return}
+  try{sessionStorage.setItem('konik-pin-v4',pin)}catch(e){}
+  busy=true;setState(); $('scanRun').textContent='Fotoğraf analiz ediliyor…';status('Teknik resim yapay zekâ ile okunuyor. Özellikle okları ve ölçü başlangıçlarını kontrol edeceğiz.');
+  try{
+    const reply=await fetch('/.netlify/functions/analyze-drawing',{method:'POST',headers:{'Content-Type':'application/json','X-Scan-Pin':pin},body:JSON.stringify({image:imageData})});
+    let data;try{data=await reply.json()}catch(e){throw new Error('Netlify fonksiyonu çalışmıyor. Sadece ZIP/Drop ile yayınlandıysa Git üzerinden fonksiyonu da kurmalısın.')}
+    if(!reply.ok)throw new Error(data.error||'Analiz başarısız (HTTP '+reply.status+').');
+    if(!data.result)throw new Error('Sunucu ölçü döndürmedi');
+    showResults(data.result);
+    status('Ölçüler okundu. Onaylamadan hesaplayıcıya aktarılmayacak.','good');
+  }catch(e){status('Tarama yapılamadı: '+e.message,'warn')}
+  finally{busy=false;setState();$('scanRun').textContent='Yapay zekâ ile ölçüleri oku'}
+});
+function transfer(which){
+  const D=parse($('scanD').value),A=parse($('scanA').value),B=parse($('scanB').value);
+  const good=Number.isFinite(D)&&D>0&&Number.isFinite(A)&&A>0&&A<180;
+  const el=$('scanTransferInfo');
+  if(!good){el.textContent='Geçerli bir çap ve 0°–180° arasında toplam açı gerekli.';el.className='scanStatus warn';return}
+  if(which==='tip'&&(!Number.isFinite(B)||B<0||!$('scanConfirmed').checked)){
+    el.textContent='Toplam boy aktarımı için B1 ölçüsünü ve referans doğrulama kutusunu tamamla.';el.className='scanStatus warn';return;
+  }
+  // Hedef alanlar mevcut hesaplayıcıların input event dinleyicilerini kullanır.
+  if(which==='tip'){
+    for(const [id,n] of [['td',D],['ta',A],['tf',B]]){$(id).value=fmt(n);$(id).dispatchEvent(new Event('input',{bubbles:true}))}
+  }else{
+    for(const [id,n] of [['d',D],['a',A]]){$(id).value=fmt(n);$(id).dispatchEvent(new Event('input',{bubbles:true}))}
+    $('t').value='';$('t').dispatchEvent(new Event('input',{bubbles:true}));
+  }
+  if(typeof window.konikOpenTab==='function')window.konikOpenTab(which);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('scanToCone').addEventListener('click',()=>transfer('cone'));
+$('scanToTip').addEventListener('click',()=>transfer('tip'));
+})();
+</script>
+</body>
+</html>
