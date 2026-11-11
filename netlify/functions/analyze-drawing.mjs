@@ -8,7 +8,7 @@ const PROMPT = `You are a conservative industrial CNC/lathe technical-drawing re
 
 GOAL: identify a conical drill/tool TIP and all AXIAL stepped cylindrical sections / surfaces. A 'surface' (Turkish 'yüzey') here is the straight cylindrical section after the conical tip, ending at the next change in diameter. The 'tip' is the sharp cone apex; the 'cone_base' is the precise axial plane where the conical tip ENDS and the first straight surface STARTS. Index steps by going from the sharp tip toward the tool shank, nearest first. The end of the nth surface is a boundary/step plane.
 
-Extract full included tip angle A and cone-base diameter D. Beware of unrelated diameters (e.g. shank diameter), 45° chamfers, radii, handwriting, tolerances, annotations and other features. Only use the nominal measurement numbers visible in dimension annotations. NEVER fabricate, interpolate, infer a missing dimension from pixels, or silently assume dimensions are from the tip. Do NOT invent geometry or a tip angle if no annotation exists.
+Also extract the tool SHAFT (rear raw cylindrical stock) diameter and full overall length from sharp tip to rear end, ONLY if explicitly dimensioned. Do not confuse shaft diameter with tip diameter; leave either null if unannotated. Extract full included tip angle A and cone-base diameter D. Beware of unrelated diameters (e.g. shank diameter), 45° chamfers, radii, handwriting, tolerances, annotations and other features. Only use the nominal measurement numbers visible in dimension annotations. NEVER fabricate, interpolate, infer a missing dimension from pixels, or silently assume dimensions are from the tip. Do NOT invent geometry or a tip angle if no annotation exists.
 
 For each axial stage/surface i, read the associated AXIAL dimension and identify its START reference by tracing extension lines/arrowheads: 'tip' = measured directly from sharp tip to end of i-th surface (total from tip), 'cone_base' = measured from the cone end to the end of this surface, 'previous_surface' = measured from the end of surface i-1 to end of i (allowed only for i>=2), 'unclear' = start unclear / dimension missing. For first stage from cone end use 'cone_base', NOT 'previous_surface'. For total lengths given from tip for all steps, each has reference 'tip'. For chained lengths across stages, i=1 may be 'cone_base', and i>=2 'previous_surface'. If one dimension spans some OTHER starting point, mark it unclear. The measure may be absent: return measurement_mm null, reference unclear; include its stage in the list if the stage itself is clearly visible. Record separate diameter per surface only if explicitly dimensioned.
 
@@ -18,6 +18,8 @@ Return ONLY JSON, no markdown, with EXACT shape:
 {
  "drawing_type":"standard"|"stepped"|"unclear",
  "diameter_mm":number|null,
+ "shaft_diameter_mm":number|null,
+ "overall_length_mm":number|null,
  "total_angle_deg":number|null,
  "b1_mm":number|null,
  "b1_reference":"cone_base"|"tip"|"other"|"unclear",
@@ -100,6 +102,7 @@ export default async function handler(request) {
     if (!raw) return response({error:'Model okunabilir bir sonuç döndürmedi; daha net bir resim dene.'},422);
     let parsed;
     try {parsed=JSON.parse(raw)} catch {return response({error:'Modelin yanıtı geçerli JSON değil; tekrar dene.'},502)}
+    const shaftD=bounded(parsed.shaft_diameter_mm,0,10000,true),overall=bounded(parsed.overall_length_mm,0,100000,true);
     const D=bounded(parsed.diameter_mm,0,10000,true),A=bounded(parsed.total_angle_deg,0,180,true),B=bounded(parsed.b1_mm,0,100000);
     const ref=['cone_base','tip','other','unclear'].includes(parsed.b1_reference)?parsed.b1_reference:'unclear';
     const confidence=['high','medium','low'].includes(parsed.confidence)?parsed.confidence:'low';
@@ -125,7 +128,7 @@ export default async function handler(request) {
     if(ref!=='cone_base'&&ref!=='tip'&&B!==null)warnings.unshift('İlk düz yüzey B1 ölçüsünün başlangıcı belirsiz; otomatik toplam hesaplama yapma.');
     if(steps.some(x=>x.measurement_mm===null||x.reference==='unclear'))warnings.push('En az bir kademenin boyu veya referansı belirsiz. Çizimden kontrol ederek tamamla.');
     if(usedModel===FALLBACK_MODEL)warnings.push('Gemini yoğunluğu nedeniyle alternatif model kullanıldı; ölçüleri teknik resimle karşılaştırın.');
-    return response({result:{drawing_type:drawingType,diameter_mm:D,total_angle_deg:A,b1_mm:B,b1_reference:ref,step_count:claimedCount,steps,features,confidence,explanation:trimmed(parsed.explanation||'Teknik resimdeki değerleri kontrol edin.',600),warnings:warnings.slice(0,9)}});
+    return response({result:{drawing_type:drawingType,diameter_mm:D,shaft_diameter_mm:shaftD,overall_length_mm:overall,total_angle_deg:A,b1_mm:B,b1_reference:ref,step_count:claimedCount,steps,features,confidence,explanation:trimmed(parsed.explanation||'Teknik resimdeki değerleri kontrol edin.',600),warnings:warnings.slice(0,9)}});
   }catch(e){return response({error:'Gemini yanıtı işlenemedi; tekrar deneyin.'},502)}
 }
 export const config={path:'/.netlify/functions/analyze-drawing'};
