@@ -10,9 +10,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Konik Hesap">
-<meta name="description" content="Konik alın boyu, toplam boy ve teknik resimden AI ölçü aktarımı.">
+<meta name="description" content="Konik alın boyu, toplam boy, kademeli takımda uçtan boylar ve teknik resimden AI ölçü aktarımı.">
 
-<title>Konik Hesap v4.1 - Torna Ölçüleri</title>
+<title>Konik Hesap v4.3 - Kademeli ve AI Tarama</title>
 <style>
 :root { color-scheme: dark; --bg:#0c1324;--card:#172338;--card2:#1d2b43;--line:#35445c;--ink:#f5f7fb;--muted:#adbdd2;--blue:#82bcff;--accent:#3b82f6;--red:#fca5a5;}
 *{box-sizing:border-box}html{min-height:100%}body{margin:0;padding:20px 14px 32px;padding-bottom:max(28px,env(safe-area-inset-bottom));padding-top:max(20px,env(safe-area-inset-top));background:radial-gradient(ellipse at top,#213452 0%,#0c1324 65%);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink)}
@@ -82,15 +82,65 @@ main{max-width:520px;margin:auto}.eyebrow{color:var(--blue);font-size:12px;font-
 .scanActions button{min-width:0}
 .scanHidden{display:none!important}
 @media(max-width:375px){.tabbar .tab{font-size:11px;padding:11px 3px}.scanButtons button{font-size:12px}}
+
+/* v4.3 — kademeli takımda bütün yüzeylerin uçtan boyu */
+.tabbar{gap:4px;padding:5px}.tabbar .tab{font-size:11px;padding:12px 2px;min-width:0}
+.stage-top-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stage-count-wrap{margin-top:15px}
+.stage-count-wrap .input-wrap input{font-size:21px}
+.stage-box{border:1px solid #415775;background:#111e32;border-radius:14px;padding:13px;margin-top:10px}
+.stage-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}
+.stage-head strong{font-size:14px}.stage-head span{font-size:11px;color:#acc2de}
+.stage-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:end}
+.stage-box .input-wrap input{font-size:20px}
+.stage-output{min-height:52px;background:#163b5b;border:1px solid #366e9d;border-radius:11px;padding:7px 9px;display:flex;flex-direction:column;justify-content:center;gap:1px}
+.stage-output small{font-size:10px;color:#b4d4f7}.stage-output strong{font-size:17px;color:#f3fbff;line-height:1.3;font-variant-numeric:tabular-nums}
+.stage-formula{color:#b5c9de;font-size:11px;margin-top:8px}
+.stage-details{display:flex;flex-direction:column;gap:4px;margin-top:13px}
+.stage-detail-line{display:flex;align-items:baseline;gap:8px;justify-content:space-between;padding:9px 0;border-bottom:1px solid #ffffff22;font-size:13px}
+.stage-detail-line strong{white-space:nowrap;font-size:18px;font-variant-numeric:tabular-nums}
+.stage-detail-line:last-child{border-bottom:0}
+.stage-error{display:none;color:#ffd3b5;font-size:12px;margin-top:10px}
+.stage-warning{margin:10px 0 0;border-left:3px solid #e8ae65;background:#2d2d33;border-radius:6px;padding:10px;color:#ffe1c6;font-size:12px;line-height:1.5}
+.stage-count-note{font-size:11px;color:#a9bfda;margin-top:7px}
+.stage-key{display:flex;gap:8px;align-items:center;margin:12px 0 0;font-size:12px;color:#d0e2f6;flex-wrap:wrap}
+.stage-key b{font-size:12px;color:#f8d89a}
+@media(max-width:375px){.tabbar .tab{font-size:10px;padding:11px 1px}.stage-output strong{font-size:15px}.stage-box{padding:11px}.stage-row{gap:8px}}
+
+/* v4.3: uçtan mesafeler, canlı sonuçlar ve kademeli resim analizi */
+.mode-area{margin-top:14px;padding:13px;border:1px solid #466084;border-radius:12px;background:#111e34}
+.mode-area label{font-size:12px;font-weight:700;color:#c8d8f1;display:block;margin-bottom:7px}
+.select-input{appearance:none;width:100%;min-height:45px;border-radius:10px;background:#0c1628;color:#f6f8ff;border:1px solid #60728e;padding:10px 12px;font-size:14px;font-weight:600}
+.mode-help{margin:9px 0 0;font-size:12px;color:#bbcee6;line-height:1.5}
+.stage-pill{border-radius:8px;background:#163b5b;border:1px solid #366e9d;padding:9px 10px;color:#e7f6ff;font-size:12px;display:inline-block;margin:8px 0}
+.scanStageEditor{border:1px solid #425b7b;background:#121f33;border-radius:12px;margin:12px 0;padding:13px}
+.scanStageEditor h3{margin:0 0 9px;font-size:15px}
+.scanStageEditor .fields{margin-top:8px}
+.scanStageEditor .field select{width:100%}
+.scanStageEditor input{font-size:20px}
+.scanStageEditor .field{min-width:0}
+.scanStageEditor .field label{font-size:11px;line-height:1.35}
+.scan-stage-total{margin:12px 0 0;padding:10px 12px;border:1px solid #3e77a6;border-radius:10px;background:#183d60;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.scan-stage-total strong{font-size:19px;white-space:nowrap}
+.scan-stage-total small{font-size:11px;color:#c7e3ff}
+.scanStageNotes{font-size:11px;color:#bacfe9;margin:7px 0 0;line-height:1.5}
+.scanStageError{font-size:12px;color:#ffdaa9;line-height:1.45;margin:8px 0 0}
+.scanActions{grid-template-columns:repeat(2,minmax(0,1fr))}
+.scanActions button:last-child{grid-column:1/-1}
+.scanActions button:disabled{opacity:.45;cursor:not-allowed}
+.stage-mode-badge{font-size:11px;color:#acd1ff;margin-top:6px}
+@media (max-width:370px){.scan-stage-total strong{font-size:16px}.scanStageEditor{padding:10px}.select-input{font-size:12px}}
+
 </style>
 </head>
 <body>
 <main>
-<header class="head"><div class="eyebrow">Torna • CNC • Geometri</div><h1>Konik Hesaplayıcı</h1><p>Konik boyu ve uçtan toplam boy hesapla; teknik resmi kamerayla tara. Hesaplamalar çevrimdışı, yapay zekâ taraması internetle çalışır.</p></header>
+<header class="head"><div class="eyebrow">Torna • CNC • Geometri</div><h1>Konik Hesaplayıcı</h1><p>Konik alın boyunu, uçtan toplam boyları ve kademeli takım ölçülerini hesapla; teknik resmi kamerayla tara. Hesaplamalar çevrimdışı, yapay zekâ taraması internetle çalışır.</p></header>
 <nav class="tabbar" role="tablist" aria-label="Hesaplama seçimi">
-<button class="tab active" id="tabCone" type="button" role="tab" aria-controls="calcCone" aria-selected="true">Konik alın boyu</button>
+<button class="tab active" id="tabCone" type="button" role="tab" aria-controls="calcCone" aria-selected="true">Konik alın</button>
 <button class="tab" id="tabTip" type="button" role="tab" aria-controls="calcTip" aria-selected="false">Toplam boy</button>
-<button class="tab" id="tabScan" type="button" role="tab" aria-controls="calcScan" aria-selected="false">📷 Resim tara</button>
+<button class="tab" id="tabSteps" type="button" role="tab" aria-controls="calcSteps" aria-selected="false">Kademeli</button>
+<button class="tab" id="tabScan" type="button" role="tab" aria-controls="calcScan" aria-selected="false">📷 Tara</button>
 </nav>
 <div id="calcCone" role="tabpanel" aria-labelledby="tabCone">
 <section class="card" aria-label="Ölçüler">
@@ -100,7 +150,7 @@ main{max-width:520px;margin:auto}.eyebrow{color:var(--blue);font-size:12px;font-
 <div class="field"><label for="a">Toplam uç açısı (A)</label><div class="input-wrap"><input id="a" type="text" inputmode="decimal" value="132" autocomplete="off" aria-label="Toplam uç açısı derece"><small>°</small></div></div>
 </div>
 <p class="help">Önemli: Açının yarısını değil, çizimde yazan <b>toplam koni açısını</b> gir. Örnek: 132°.</p>
-<div class="optional"><div class="field"><label for="t">Omuzdan uca toplam boy (isteğe bağlı)</label><div class="input-wrap"><input id="t" type="text" inputmode="decimal" value="35" autocomplete="off" aria-label="Omuzdan uca toplam boy milimetre"><small>mm</small></div></div></div>
+<div class="optional"><div class="field"><label for="t">Yüzeyden uca toplam boy (isteğe bağlı)</label><div class="input-wrap"><input id="t" type="text" inputmode="decimal" value="35" autocomplete="off" aria-label="Yüzeyden uca toplam boy milimetre"><small>mm</small></div></div></div>
 </section>
 <section class="card results" aria-live="polite">
 <div class="kicker">KONİK ALIN BOYU (L)</div><div class="big" id="result">5,120 <span>mm</span></div><div class="desc">Koninin başladığı çap düzleminden uç noktasına eksenel mesafe</div>
@@ -129,20 +179,20 @@ main{max-width:520px;margin:auto}.eyebrow{color:var(--blue);font-size:12px;font-
 </div>
 <div id="calcTip" role="tabpanel" aria-labelledby="tabTip" hidden>
 <section class="card" aria-label="Toplam boy ölçüleri">
-  <h2>Uçtan ilk omuza toplam boy hesabı</h2>
+  <h2>Uçtan ilk yüzeye toplam boy hesabı</h2>
   <p class="tip-intro">Teknik resimde <b>B1</b> veriliyorsa sadece çapı (D), toplam uç açısını (A) ve B1 ölçüsünü gir. <b>L</b> otomatik hesaplanır; <b>Toplam Boy = L + B1</b>.</p>
   <div class="tip-inputs">
     <div class="field"><label for="td">Uç çapı (D)</label><div class="input-wrap"><input id="td" type="text" inputmode="decimal" value="4,50" autocomplete="off" aria-label="Uç çapı milimetre"><small>mm</small></div></div>
     <div class="field"><label for="ta">Toplam uç açısı (A)</label><div class="input-wrap"><input id="ta" type="text" inputmode="decimal" value="140" autocomplete="off" aria-label="Toplam uç açısı derece"><small>°</small></div></div>
-    <div class="field"><label for="tf">Resimde verilen düz boy (B1)</label><div class="input-wrap"><input id="tf" type="text" inputmode="decimal" value="5,50" autocomplete="off" aria-label="Konik başlangıcından ilk omuza B1 boyu milimetre"><small>mm</small></div></div>
+    <div class="field"><label for="tf">Resimde verilen düz boy (B1)</label><div class="input-wrap"><input id="tf" type="text" inputmode="decimal" value="5,50" autocomplete="off" aria-label="Konik başlangıcından ilk yüzeye B1 boyu milimetre"><small>mm</small></div></div>
   </div>
-  <p class="help">B1, koninin bittiği ØD düzleminden ilk omuza kadar olan ölçüdür. L değerini ayrıca bilmen veya girmen gerekmez.</p>
+  <p class="help">B1, koninin bittiği ØD düzleminden ilk yüzeye kadar olan ölçüdür. L değerini ayrıca bilmen veya girmen gerekmez.</p>
   <div class="actions"><button type="button" id="tipReset">Örnek ölçüleri getir</button></div>
 </section>
 <section class="card results" aria-live="polite" aria-label="Toplam boy sonucu">
   <div class="kicker">TOPLAM BOY</div>
   <div class="big" id="tipFirst">6,319 <span>mm</span></div>
-  <div class="desc">Sivri uçtan ilk omuza kadar olan eksenel mesafe</div>
+  <div class="desc">Sivri uçtan ilk yüzeye kadar olan eksenel mesafe</div>
   <div class="result-summary">
     <div class="result-chip"><label>Hesaplanan konik payı (L)</label><strong id="tipOffset">0,819 mm</strong></div>
     <div class="result-chip"><label>Resimde verilen boy (B1)</label><strong id="tipB1">5,500 mm</strong></div>
@@ -153,7 +203,7 @@ main{max-width:520px;margin:auto}.eyebrow{color:var(--blue);font-size:12px;font-
 </section>
 <section class="card">
   <h2>Hesaplamanın şeması</h2>
-  <svg viewBox="0 0 360 227" role="img" aria-label="Sivri uç, koni başlangıcı ve ilk omuz arasında L ve B1 ölçülerinin toplamını gösteren şema">
+  <svg viewBox="0 0 360 227" role="img" aria-label="Sivri uç, koni başlangıcı ve ilk yüzey arasında L ve B1 ölçülerinin toplamını gösteren şema">
    <path d="M28 95 L113 50 H303 V140 H113 Z" fill="#29445f" stroke="#a8bdd9" stroke-width="1.7"/>
    <path d="M28 95 L113 50 V140 Z" fill="#3b82f65a" stroke="#82bcff" stroke-width="2.1"/>
    <path d="M15 95 H340" stroke="#cbd9e9" stroke-dasharray="6 5" opacity=".5"/>
@@ -166,14 +216,56 @@ main{max-width:520px;margin:auto}.eyebrow{color:var(--blue);font-size:12px;font-
    <text x="168" y="196" fill="#8bebd1" text-anchor="middle" font-size="12" font-weight="bold">TOPLAM BOY = L + B1</text>
    <text x="28" y="77" fill="#f1c47e" font-size="12" text-anchor="middle">Uç</text>
    <text x="113" y="40" fill="#dce9fa" font-size="11" text-anchor="middle">Koni başı</text>
-   <text x="303" y="40" fill="#dce9fa" font-size="11" text-anchor="middle">İlk omuz</text>
+   <text x="303" y="40" fill="#dce9fa" font-size="11" text-anchor="middle">İlk yüzey</text>
   </svg>
-  <p class="detail-note">Şema temsilidir, ölçekli değildir. <b>L</b> sivri uçtan koni başlangıcına, <b>B1</b> koni başlangıcından ilk omuza ölçülür. Toplam boy sivri uçtan ilk omuza uzanır.</p>
+  <p class="detail-note">Şema temsilidir, ölçekli değildir. <b>L</b> sivri uçtan koni başlangıcına, <b>B1</b> koni başlangıcından ilk yüzeye ölçülür. Toplam boy sivri uçtan ilk yüzeye uzanır.</p>
 </section>
 <section class="card" aria-label="Formüller">
   <h2>Hesaplama formülü</h2>
   <div class="formula">L = (D ÷ 2) ÷ tan(A ÷ 2)<br>Toplam Boy = L + B1</div>
   <p class="formula-value" id="tipFormula">0,819 + 5,500 = 6,319 mm</p>
+</section>
+</div>
+
+
+<div id="calcSteps" role="tabpanel" aria-labelledby="tabSteps" hidden>
+<section class="card" aria-label="Kademeli takımın ölçüleri">
+  <h2>Kademeli takım — uçtan yüzey boyları</h2>
+  <p class="tip-intro"><b>Uç çapını</b>, <b>toplam uç açısını</b> ve <b>kademe sayısını</b> gir. Her kademe için bir boy alanı açılır; her yüzeyin sivri uçtan uzaklığı gösterilir. <b>Yüzey</b>, koninin bitiminden sonra başlayan düz/kademeli bölümdür.</p>
+  <div class="stage-top-grid">
+    <div class="field"><label for="stepD">Uç çapı (D)</label><div class="input-wrap"><input id="stepD" type="text" inputmode="decimal" value="16" autocomplete="off"><small>mm</small></div></div>
+    <div class="field"><label for="stepA">Toplam uç açısı (A)</label><div class="input-wrap"><input id="stepA" type="text" inputmode="decimal" value="140" autocomplete="off"><small>°</small></div></div>
+  </div>
+  <div class="stage-count-wrap field"><label for="stepCount">Kademe sayısı</label><div class="input-wrap"><input id="stepCount" type="number" inputmode="numeric" min="1" max="30" step="1" value="2" autocomplete="off"></div><div class="stage-count-note">1–30 kademe; değiştirdiğinde ölçü alanları oluşur.</div></div>
+  <div class="mode-area">
+    <label for="stepMode">Boylar teknik resimde nasıl verilmiş?</label>
+    <select id="stepMode" class="select-input">
+      <option value="tip">Sivri uçtan toplam boy (S1, S2, …)</option>
+      <option value="segments">Ardışık düz yüzey boyları (B1, B2, …)</option>
+    </select>
+    <p class="mode-help" id="stepModeHelp">Varsayılan: Her kutuya ilgili yüzeyin <b>uçtan toplam boyunu</b> yaz. Önceki yüzeyin boyu yeniden eklenmez.</p>
+  </div>
+  <div id="stepFields" aria-live="off"></div>
+  <p id="stepInputsError" class="stage-error" role="alert"></p>
+  <div class="actions"><button type="button" id="stepReset">Örnek ölçüleri getir</button></div>
+</section>
+<section class="card results" aria-label="Kademelerin uçtan mesafeleri" aria-live="polite">
+  <div class="kicker">SON YÜZEYİN SİVRİ UÇTAN BOYU</div>
+  <div class="big" id="stepLast">— <span>mm</span></div>
+  <div class="desc">Bütün kademelerin sonuçları uçtaki sivri noktadan itibaren gösterilir.</div>
+  <div class="minor"><span>Konik uç boyu (L)</span><strong id="stepL">—</strong></div>
+  <div class="stage-details" id="stepResults"></div>
+  <div class="actions"><button class="primary" type="button" id="stepCopy">Tüm sonuçları kopyala</button></div>
+</section>
+<section class="card">
+  <h2>Kademe şeması</h2>
+  <svg id="stepDiagram" viewBox="0 0 420 182" role="img" aria-label="Sivri uç ve kademeli düz yüzeylerin şematik gösterimi"></svg>
+  <p class="detail-note">Şema temsilîdir ve ölçekli değildir. Çaplar, yüzey uzunlukları ve açılar teknik resimden ayrıca kontrol edilmelidir.</p>
+</section>
+<section class="card">
+  <h2>Hesaplama kuralı</h2>
+  <div class="formula">L = (D ÷ 2) ÷ tan(A ÷ 2)<br>Uçtan girilen boylar: Y1 = S1, Y2 = S2 …<br>Ardışık düz boylar: Y1 = L + B1, Y2 = L + B1 + B2 …</div>
+  <p class="tip-note">Ölçüler çizimde <b>zaten sivri uçtan</b> veriliyorsa L veya önceki yüzey boyunu tekrar toplama. Koninin bitiminden itibaren düz boylar verilmişse ikinci yöntemi seç.</p>
 </section>
 </div>
 
@@ -200,23 +292,33 @@ main{max-width:520px;margin:auto}.eyebrow{color:var(--blue);font-size:12px;font-
   <p class="help">Bu işlem internet gerektirir. API anahtarı telefonuna veya bu sayfanın kaynak koduna yazılmaz; Netlify sunucu ayarlarında tutulur. Tarama şifresi sadece bu oturumda bellekte saklanır.</p>
 </section>
 <section class="card scanReview" id="scanReview" hidden>
-  <h2>Okunan ölçüleri kontrol et</h2>
+  <h2>Okunan ölçüleri kontrol et ve düzenle</h2>
   <div id="scanExplanation" class="scanExplanation"></div>
   <ul id="scanWarnings" class="scanWarnings"></ul>
+  <div class="stage-pill" id="scanDrawingKind">Resim türü: kontrol bekliyor</div>
   <div class="fields" style="margin-top:13px">
-    <div class="field"><label for="scanD">Çap (D), mm</label><div class="input-wrap"><input id="scanD" type="text" inputmode="decimal" placeholder="Örn. 4,50"><small>mm</small></div></div>
-    <div class="field"><label for="scanA">Toplam açı (A)</label><div class="input-wrap"><input id="scanA" type="text" inputmode="decimal" placeholder="Örn. 140"><small>°</small></div></div>
-    <div class="field"><label for="scanB">Resimdeki düz boy (B1)</label><div class="input-wrap"><input id="scanB" type="text" inputmode="decimal" placeholder="Örn. 5,50"><small>mm</small></div></div>
+    <div class="field"><label for="scanD">Uç çapı (D), mm</label><div class="input-wrap"><input id="scanD" type="text" inputmode="decimal" placeholder="Örn. 4,50"><small>mm</small></div></div>
+    <div class="field"><label for="scanA">Toplam uç açısı (A)</label><div class="input-wrap"><input id="scanA" type="text" inputmode="decimal" placeholder="Örn. 140"><small>°</small></div></div>
+    <div class="field"><label for="scanB">İlk düz yüzey ölçüsü (B1)</label><div class="input-wrap"><input id="scanB" type="text" inputmode="decimal" placeholder="Okunamadı"><small>mm</small></div></div>
+    <div class="field"><label for="scanBReference">B1 ölçü başlangıcı</label><select id="scanBReference" class="select-input">
+      <option value="cone_base">Koninin bitiminden</option><option value="tip">Sivri uçtan</option><option value="other">Diğer referans</option><option value="unclear">Belirsiz</option>
+    </select></div>
   </div>
   <div class="scanTag" id="scanRef"></div>
-  <label class="scanConsent"><input type="checkbox" id="scanConfirmed"><span>Çapı, açıyı ve <b>B1'in koni başlangıç düzleminden ilk omuza</b> ölçüldüğünü teknik resimde kendim doğruladım.</span></label>
-  <div class="scanActions"><button type="button" id="scanToCone">Konik hesaplayıcıya aktar</button><button class="primary" type="button" id="scanToTip">Toplam boya aktar</button></div>
+  <div class="mode-area" style="margin-top:14px">
+    <div class="field"><label for="scanStepCount">Resimdeki kademe sayısı (düzenlenebilir)</label><div class="input-wrap"><input id="scanStepCount" type="number" min="0" max="30" inputmode="numeric" value="0" style="width:100%;background:#0c1628;color:white;border:1px solid #60728e;border-radius:10px;font-size:21px;padding:11px"></div></div>
+    <p class="mode-help">Her yüzeyin boyunu ve ölçünün nereden başladığını kontrol et. Bir ölçü belirsizse boş bırakabilirsin. <b>Uçtan sonuçlar</b> altta otomatik hesaplanır.</p>
+  </div>
+  <div id="scanStageRows"></div>
+  <p id="scanStageMessage" class="scanStageError"></p>
+  <label class="scanConsent"><input type="checkbox" id="scanConfirmed"><span>Çizimdeki değerleri ve <b>ölçü başlangıçlarını</b> kontrol ettim; hatalı/eksik olanları düzelttim. Yapay zekâ sonucu tek başına işleme onayı değildir.</span></label>
+  <div class="scanActions"><button type="button" id="scanToCone">Konik alına aktar</button><button type="button" id="scanToTip">Toplam boya aktar</button><button class="primary" type="button" id="scanToSteps">Kademeliye aktar</button></div>
   <div class="scanStatus" id="scanTransferInfo" aria-live="polite">Önce değerleri incele; emin değilsen düzelt.</div>
-  <p class="tol-note">Yapay zekâ milimetre, tolerans, 140° gibi açıları veya referans çizgilerini yanlış okuyabilir. Bu sonuç bir CNC işleme onayı değildir; ölçüleri çizim ve toleranslarla karşılaştır.</p>
+  <p class="tol-note">Teknik resimlerde kademeler bağımsız olarak uçtan, koni bitiminden veya önceki yüzeyden ölçülebilir. Referansı belirsiz uzunluklar hesaplanmaz; toleransları, Z sıfırını ve işleme yönünü kontrol et.</p>
 </section>
 <section class="card">
   <h2>Yapay zekâ olmadan da çalışır</h2>
-  <p class="tip-intro">Fotoğrafı seçip büyüterek inceleyebilirsin. İnternet yoksa ölçüleri diğer iki hesaplama sekmesine elle girmen yeterli. Temel hesaplar çevrimdışı çalışır.</p>
+  <p class="tip-intro">Fotoğrafı seçip büyüterek inceleyebilirsin. İnternet yoksa ölçüleri diğer hesaplama sekmelerine elle girmen yeterli. Temel hesaplar çevrimdışı çalışır.</p>
   <div class="scanFooter">Hesap mantığı: <b>L = (D/2) ÷ tan(A/2)</b> ve <b>Toplam Boy = L + B1</b>. B1'in başlangıcı başka bir yüzeyse bu formülü doğrudan uygulama.</div>
 </section>
 </div>
@@ -260,10 +362,10 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 (function(){
   'use strict';
   const $=id=>document.getElementById(id);
-  const tabCone=$('tabCone'),tabTip=$('tabTip'),tabScan=$('tabScan'),calcCone=$('calcCone'),calcTip=$('calcTip'),calcScan=$('calcScan');
+  const tabCone=$('tabCone'),tabTip=$('tabTip'),tabSteps=$('tabSteps'),tabScan=$('tabScan'),calcCone=$('calcCone'),calcTip=$('calcTip'),calcSteps=$('calcSteps'),calcScan=$('calcScan');
   function openTab(which){
-    if(!['cone','tip','scan'].includes(which))which='cone';
-    for(const [value,button,section] of [['cone',tabCone,calcCone],['tip',tabTip,calcTip],['scan',tabScan,calcScan]]){
+    if(!['cone','tip','steps','scan'].includes(which))which='cone';
+    for(const [value,button,section] of [['cone',tabCone,calcCone],['tip',tabTip,calcTip],['steps',tabSteps,calcSteps],['scan',tabScan,calcScan]]){
       const active=which===value;
       section.hidden=!active;button.classList.toggle('active',active);
       button.setAttribute('aria-selected',String(active));
@@ -273,6 +375,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   window.konikOpenTab=openTab;
   tabCone.addEventListener('click',()=>openTab('cone'));
   tabTip.addEventListener('click',()=>openTab('tip'));
+  tabSteps.addEventListener('click',()=>openTab('steps'));
   tabScan.addEventListener('click',()=>openTab('scan'));
   try{openTab(localStorage.getItem('konik-tab-v2')||'cone')}catch(e){openTab('cone')}
 
@@ -295,7 +398,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     $('tipB1').textContent=fmt(B1)+' mm';
     $('tipFirst').innerHTML=fmt(total)+' <span>mm</span>';
     $('tipFormula').textContent=fmt(L)+' + '+fmt(B1)+' = '+fmt(total)+' mm';
-    copyText='TOPLAM BOY (Uçtan ilk omuza): '+fmt(total)+' mm\nÇap: Ø'+fmt(D)+' mm\nToplam uç açısı: '+fmt(A)+'°\nHesaplanan konik payı (L): '+fmt(L)+' mm\nVerilen düz boy (B1): '+fmt(B1)+' mm\nFormül: L + B1';
+    copyText='TOPLAM BOY (Uçtan ilk yüzeye): '+fmt(total)+' mm\nÇap: Ø'+fmt(D)+' mm\nToplam uç açısı: '+fmt(A)+'°\nHesaplanan konik payı (L): '+fmt(L)+' mm\nVerilen düz boy (B1): '+fmt(B1)+' mm\nFormül: L + B1';
     try{localStorage.setItem('konik-toplam-v3',JSON.stringify({d:d.value,a:a.value,b1:b.value}))}catch(e){}
   }
   try{
@@ -320,103 +423,283 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 (function(){
 'use strict';
 const $=id=>document.getElementById(id);
-let originalImage=null,rotation=0,imageData=null,busy=false;
+let originalImage=null,rotation=0,imageData=null,busy=false,stageEntries=[],lastScan=null,scanTotals=[];
 const status=(s,type='')=>{const el=$('scanStatus');el.textContent=s;el.className='scanStatus '+type};
-const fmt=n=>Number(n).toLocaleString('tr-TR',{maximumFractionDigits:4});
+const fmt=n=>Number(n).toLocaleString('tr-TR',{minimumFractionDigits:3,maximumFractionDigits:3});
+const asText=n=>n!==null&&n!==undefined&&typeof n==='number'&&Number.isFinite(n)?String(n).replace('.',','):'';
 const parse=s=>{const v=String(s).trim().replace(/\s/g,'').replace(',','.');return v===''?NaN:Number(v)};
-function setState(){ $('scanRun').disabled=!imageData||busy; }
+const geom=()=>{const D=parse($('scanD').value),A=parse($('scanA').value);return Number.isFinite(D)&&D>0&&Number.isFinite(A)&&A>0&&A<180?(D/2)/Math.tan(A*Math.PI/360):NaN};
+function setState(){$('scanRun').disabled=!imageData||busy}
 async function loadFile(file){
-  if(!file)return;
-  if(!file.type.startsWith('image/')){status('Lütfen JPG, PNG veya HEIC/HEIF görüntüsü seç.', 'warn');return;}
-  $('scanReview').hidden=true;
-  if(originalImage){URL.revokeObjectURL(originalImage.url);originalImage=null;}
-  const url=URL.createObjectURL(file),img=new Image();
-  status('Fotoğraf hazırlanıyor...');
-  img.onload=()=>{
-    originalImage={img,url,name:file.name||'kamera fotoğrafı'};
-    rotation=0;
-    try{renderImage();}catch(e){status('Fotoğraf işlenemedi. JPG veya PNG olarak tekrar dene.','warn')}
-  };
-  img.onerror=()=>{URL.revokeObjectURL(url);status('Bu görüntü türü açılamadı. JPG veya PNG seç.','warn')};
-  img.src=url;
+ if(!file)return;
+ if(!file.type.startsWith('image/')){status('Lütfen görüntü dosyası seç.','warn');return}
+ $('scanReview').hidden=true;
+ if(originalImage){URL.revokeObjectURL(originalImage.url);originalImage=null}
+ const url=URL.createObjectURL(file),img=new Image();status('Fotoğraf hazırlanıyor...');
+ img.onload=()=>{originalImage={img,url,name:file.name||'kamera fotoğrafı'};rotation=0;try{renderImage()}catch(e){status('Fotoğraf işlenemedi. JPG veya PNG olarak tekrar dene.','warn')}};
+ img.onerror=()=>{URL.revokeObjectURL(url);status('Bu görüntü türü açılamadı. JPG veya PNG seç.','warn')};img.src=url;
 }
 function renderImage(){
-  if(!originalImage)return;
-  const img=originalImage.img;
-  const turning=(rotation%180)!==0;
-  const sw=img.naturalWidth,sh=img.naturalHeight;
-  if(!sw||!sh)throw Error('Boş fotoğraf');
-  const maxSide=2300,scale=Math.min(1,maxSide/Math.max(sw,sh));
-  const tw=Math.round(sw*scale),th=Math.round(sh*scale);
-  const canvas=document.createElement('canvas');canvas.width=turning?th:tw;canvas.height=turning?tw:th;
-  const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)throw Error('Canvas desteklenmiyor');
-  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.translate(canvas.width/2,canvas.height/2);ctx.rotate(rotation*Math.PI/180);
-  ctx.drawImage(img,-tw/2,-th/2,tw,th);
-  imageData=canvas.toDataURL('image/jpeg',0.87);
-  $('scanPreview').src=imageData;
-  $('scanPhotoArea').hidden=false;
-  $('scanPhotoInfo').textContent='Gönderilecek görüntü: '+canvas.width+' × '+canvas.height+' px (sıkıştırıldı). Gerekirse döndür.';
-  status('Fotoğraf hazır. Tarama şifreni girip onay kutusunu işaretleyerek analize başlayabilirsin.');
-  setState();
+ if(!originalImage)return;
+ const img=originalImage.img,turning=rotation%180!==0,sw=img.naturalWidth,sh=img.naturalHeight;
+ if(!sw||!sh)throw Error('Boş fotoğraf');
+ const scale=Math.min(1,2300/Math.max(sw,sh)),tw=Math.round(sw*scale),th=Math.round(sh*scale);
+ const canvas=document.createElement('canvas');canvas.width=turning?th:tw;canvas.height=turning?tw:th;
+ const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)throw Error('Canvas desteklenmiyor');
+ ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.translate(canvas.width/2,canvas.height/2);ctx.rotate(rotation*Math.PI/180);ctx.drawImage(img,-tw/2,-th/2,tw,th);
+ imageData=canvas.toDataURL('image/jpeg',0.87);$('scanPreview').src=imageData;$('scanPhotoArea').hidden=false;
+ $('scanPhotoInfo').textContent='Gönderilecek görüntü: '+canvas.width+' × '+canvas.height+' px. Gerekirse döndür.';
+ status('Fotoğraf hazır. Şifreni girip onay kutusunu işaretle.');setState();
 }
 $('scanCameraBtn').addEventListener('click',()=>$('scanCamera').click());
 $('scanGalleryBtn').addEventListener('click',()=>$('scanGallery').click());
-$('scanCamera').addEventListener('change',e=>{loadFile(e.target.files?.[0]);e.target.value='' });
-$('scanGallery').addEventListener('change',e=>{loadFile(e.target.files?.[0]);e.target.value='' });
+$('scanCamera').addEventListener('change',e=>{loadFile(e.target.files?.[0]);e.target.value=''});
+$('scanGallery').addEventListener('change',e=>{loadFile(e.target.files?.[0]);e.target.value=''});
 $('scanRotateLeft').addEventListener('click',()=>{rotation=(rotation+270)%360;renderImage()});
 $('scanRotateRight').addEventListener('click',()=>{rotation=(rotation+90)%360;renderImage()});
-try{$('scanPin').value=sessionStorage.getItem('konik-pin-v4')||'';}catch(e){}
-function showResults(r){
-  const value=n=>n!==null&&n!==undefined&&Number.isFinite(Number(n))?fmt(Number(n)):'';
-  $('scanD').value=value(r.diameter_mm);$('scanA').value=value(r.total_angle_deg);$('scanB').value=value(r.b1_mm);
-  const ref={cone_base:'Koni başlangıcından omuza',tip:'Uç noktasından ölçülmüş',other:'Farklı bir referansa ait',unclear:'Başlangıç referansı belirsiz'};
-  $('scanRef').textContent='B1 referansı (AI tahmini): '+(ref[r.b1_reference]||'Belirsiz')+' • Güven: '+({high:'yüksek',medium:'orta',low:'düşük'}[r.confidence]||'belirsiz');
-  $('scanExplanation').textContent=r.explanation||'Ölçüler otomatik okundu; lütfen çizimi kontrol et.';
-  const ul=$('scanWarnings');ul.textContent='';
-  (Array.isArray(r.warnings)?r.warnings:[]).slice(0,5).forEach(w=>{const li=document.createElement('li');li.textContent=String(w);ul.append(li)});
-  $('scanConfirmed').checked=false;
-  $('scanReview').hidden=false;
-  $('scanTransferInfo').textContent='Ölçüleri resimle karşılaştırıp referans onay kutusunu işaretle.';
-  $('scanReview').scrollIntoView({behavior:'smooth',block:'start'});
+try{$('scanPin').value=sessionStorage.getItem('konik-pin-v4')||''}catch(e){}
+function count(){const n=Number($('scanStepCount').value);return Number.isInteger(n)&&n>=0&&n<=30?n:null}
+function snapshot(){for(let i=0;i<stageEntries.length;i++){
+ const input=$('scanStageM'+i);if(!input)continue;
+ stageEntries[i].measure=input.value;stageEntries[i].reference=$('scanStageRef'+i).value;stageEntries[i].diameter=$('scanStageD'+i).value;
+}}
+function renderStageRows(){
+ snapshot();const n=count(),holder=$('scanStageRows');holder.replaceChildren();
+ if(n===null){$('scanStageMessage').textContent='Kademe sayısı 0–30 arasında tam sayı olmalı.';return}
+ $('scanStageMessage').textContent='';
+ for(let i=0;i<n;i++){
+   if(!stageEntries[i])stageEntries[i]={measure:'',reference:'unclear',diameter:'',note:''};
+   const e=stageEntries[i],div=document.createElement('div');div.className='scanStageEditor';
+   div.innerHTML=`<h3>${i+1}. Kademe · ${i+1}. yüzey</h3>
+   <div class="fields"><div class="field"><label for="scanStageM${i}">Çizimdeki boy (mm)</label><div class="input-wrap"><input id="scanStageM${i}" type="text" inputmode="decimal" placeholder="Okunamadı"><small>mm</small></div></div>
+   <div class="field"><label for="scanStageD${i}">Yüzey çapı (varsa)</label><div class="input-wrap"><input id="scanStageD${i}" type="text" inputmode="decimal" placeholder="Opsiyonel"><small>mm</small></div></div></div>
+   <div class="field" style="margin-top:11px"><label for="scanStageRef${i}">Boy ölçüsü nereden başlıyor?</label>
+   <select id="scanStageRef${i}" class="select-input"><option value="tip">Sivri uçtan toplam boy</option><option value="cone_base">Koninin bitiminden</option><option value="previous_surface">Bir önceki yüzeyden</option><option value="unclear">Belirsiz / eksik referans</option></select></div>
+   <div class="scan-stage-total"><small>Uçtan ${i+1}. yüzey boyu</small><strong id="scanStageTotal${i}">—</strong></div>
+   <p class="scanStageNotes" id="scanStageNote${i}"></p>`;
+   holder.appendChild(div);
+   $('scanStageM'+i).value=e.measure;$('scanStageRef'+i).value=e.reference;$('scanStageD'+i).value=e.diameter;
+   $('scanStageM'+i).addEventListener('input',updateStageTotals);
+   $('scanStageRef'+i).addEventListener('change',updateStageTotals);
+   $('scanStageD'+i).addEventListener('input',updateStageTotals);
+   $('scanStageNote'+i).textContent=e.note||'';
+ }
+ updateStageTotals();
 }
+function updateStageTotals(){
+ const n=count(),L=geom();scanTotals=[];let last=NaN,problems=[];
+ if(n===null)return;
+ for(let i=0;i<n;i++){
+   const raw=$('scanStageM'+i)?.value??'',length=parse(raw),ref=$('scanStageRef'+i)?.value||'unclear';let total=NaN;
+   if(raw.trim()&&Number.isFinite(length)&&length>=0){
+     if(ref==='tip')total=length;
+     else if(ref==='cone_base'&&Number.isFinite(L))total=L+length;
+     else if(ref==='previous_surface'&&i>0&&Number.isFinite(last))total=last+length;
+   }
+   if(Number.isFinite(total)&&Number.isFinite(L)&&total<L-0.000001){problems.push((i+1)+'. yüzey boyu konik uç boyundan kısa.');total=NaN}
+   if(Number.isFinite(total)&&Number.isFinite(last)&&total+0.000001<last){problems.push((i+1)+'. yüzey bir önceki yüzeyden daha kısa görünüyor.');total=NaN}
+   if(!Number.isFinite(total))problems.push((i+1)+'. yüzey: ölçü ya da ölçü başlangıcı eksik/belirsiz.');
+   last=total;scanTotals.push(total);
+   $('scanStageTotal'+i).textContent=Number.isFinite(total)?fmt(total)+' mm':'—';
+ }
+ $('scanStageMessage').textContent=problems.slice(0,5).join(' ');
+ $('scanToSteps').disabled=n<1;
+}
+function showResults(r){
+ lastScan=r;
+ $('scanD').value=asText(r.diameter_mm);$('scanA').value=asText(r.total_angle_deg);$('scanB').value=asText(r.b1_mm);
+ const refList=['cone_base','tip','other','unclear'];$('scanBReference').value=refList.includes(r.b1_reference)?r.b1_reference:'unclear';
+ $('scanRef').textContent='B1 başlangıcı ve güven: '+({high:'yüksek',medium:'orta',low:'düşük'}[r.confidence]||'belirsiz')+'. Ölçüler otomatik olarak uygulanmaz.';
+ $('scanDrawingKind').textContent='Resim türü: '+({stepped:'Kademeli takım',standard:'Standart konik',unclear:'Belirsiz'}[r.drawing_type]||'Belirsiz');
+ $('scanExplanation').textContent=r.explanation||'Ölçüler otomatik okundu; çizimdeki ölçü başlangıçlarını kontrol et.';
+ const ul=$('scanWarnings');ul.replaceChildren();
+ (Array.isArray(r.warnings)?r.warnings:[]).slice(0,8).forEach(w=>{const li=document.createElement('li');li.textContent=String(w);ul.append(li)});
+ const steps=Array.isArray(r.steps)?r.steps:[];const fromModel=Number.isInteger(r.step_count)?r.step_count:steps.length;
+ const n=Math.min(30,Math.max(0,fromModel||steps.length));
+ stageEntries=Array.from({length:n},(_,i)=>{
+   const q=steps.find(x=>Number(x.index)===i+1)||{};
+   return {measure:asText(q.measurement_mm),reference:['tip','cone_base','previous_surface'].includes(q.reference)?q.reference:'unclear',diameter:asText(q.diameter_mm),note:q.note?String(q.note):''};
+ });
+ if(n===0&&r.b1_mm!==null&&r.b1_mm!==undefined&&r.b1_reference==='cone_base'){
+   stageEntries=[{measure:asText(r.b1_mm),reference:'cone_base',diameter:'',note:'İlk düz yüzey, B1 üzerinden aktarıldı.'}];
+ }
+ $('scanStepCount').value=stageEntries.length;
+ $('scanConfirmed').checked=false;$('scanReview').hidden=false;
+ renderStageRows();
+ $('scanTransferInfo').textContent='Boyları ve ölçü başlangıçlarını incele, gerekirse düzelt; ardından onaylayıp aktar.';
+ $('scanTransferInfo').className='scanStatus';$('scanReview').scrollIntoView({behavior:'smooth',block:'start'});
+}
+$('scanStepCount').addEventListener('input',renderStageRows);
+[$('scanD'),$('scanA')].forEach(e=>e.addEventListener('input',updateStageTotals));
 $('scanRun').addEventListener('click',async()=>{
-  if(busy||!imageData)return;
-  const pin=$('scanPin').value.trim();
-  if(!pin){status('Önce Netlify için belirlediğin tarama şifresini yaz.','warn');return}
-  if(!$('scanConsent').checked){status('Fotoğrafın Google Gemini hizmetine gönderilmesine onay vermen gerekiyor.','warn');return}
-  try{sessionStorage.setItem('konik-pin-v4',pin)}catch(e){}
-  busy=true;setState(); $('scanRun').textContent='Fotoğraf analiz ediliyor…';status('Teknik resim yapay zekâ ile okunuyor. Özellikle okları ve ölçü başlangıçlarını kontrol edeceğiz.');
-  try{
-    const reply=await fetch('/.netlify/functions/analyze-drawing',{method:'POST',headers:{'Content-Type':'application/json','X-Scan-Pin':pin},body:JSON.stringify({image:imageData})});
-    let data;try{data=await reply.json()}catch(e){throw new Error('Netlify fonksiyonu çalışmıyor. Sadece ZIP/Drop ile yayınlandıysa Git üzerinden fonksiyonu da kurmalısın.')}
-    if(!reply.ok)throw new Error(data.error||'Analiz başarısız (HTTP '+reply.status+').');
-    if(!data.result)throw new Error('Sunucu ölçü döndürmedi');
-    showResults(data.result);
-    status('Ölçüler okundu. Onaylamadan hesaplayıcıya aktarılmayacak.','good');
-  }catch(e){status('Tarama yapılamadı: '+e.message,'warn')}
-  finally{busy=false;setState();$('scanRun').textContent='Yapay zekâ ile ölçüleri oku'}
+ if(busy||!imageData)return;
+ const pin=$('scanPin').value.trim();
+ if(!pin){status('Önce tarama şifreni yaz.','warn');return}
+ if(!$('scanConsent').checked){status('Fotoğrafın Gemini hizmetine gönderilmesine onay vermen gerekiyor.','warn');return}
+ try{sessionStorage.setItem('konik-pin-v4',pin)}catch(e){}
+ busy=true;setState();$('scanRun').textContent='Fotoğraf analiz ediliyor…';status('Teknik resimdeki çap, açı, kademeler ve boy başlangıçları inceleniyor.');
+ try{
+   const reply=await fetch('/.netlify/functions/analyze-drawing',{method:'POST',headers:{'Content-Type':'application/json','X-Scan-Pin':pin},body:JSON.stringify({image:imageData})});
+   let data;try{data=await reply.json()}catch(e){throw new Error('Netlify fonksiyonu JSON döndürmedi. Son yayını kontrol et.')}
+   if(!reply.ok)throw new Error(data.error||'Analiz başarısız (HTTP '+reply.status+').');
+   if(!data.result)throw new Error('Sunucu ölçü döndürmedi');
+   showResults(data.result);status('Ölçüler okundu. Kademeleri kontrol etmeden aktarım yapılmaz.','good');
+ }catch(e){status('Tarama yapılamadı: '+e.message,'warn')}
+ finally{busy=false;setState();$('scanRun').textContent='Yapay zekâ ile ölçüleri oku'}
 });
+function info(message,warn=true){const e=$('scanTransferInfo');e.textContent=message;e.className='scanStatus '+(warn?'warn':'good')}
 function transfer(which){
-  const D=parse($('scanD').value),A=parse($('scanA').value),B=parse($('scanB').value);
-  const good=Number.isFinite(D)&&D>0&&Number.isFinite(A)&&A>0&&A<180;
-  const el=$('scanTransferInfo');
-  if(!good){el.textContent='Geçerli bir çap ve 0°–180° arasında toplam açı gerekli.';el.className='scanStatus warn';return}
-  if(which==='tip'&&(!Number.isFinite(B)||B<0||!$('scanConfirmed').checked)){
-    el.textContent='Toplam boy aktarımı için B1 ölçüsünü ve referans doğrulama kutusunu tamamla.';el.className='scanStatus warn';return;
-  }
-  // Hedef alanlar mevcut hesaplayıcıların input event dinleyicilerini kullanır.
-  if(which==='tip'){
-    for(const [id,n] of [['td',D],['ta',A],['tf',B]]){$(id).value=fmt(n);$(id).dispatchEvent(new Event('input',{bubbles:true}))}
-  }else{
-    for(const [id,n] of [['d',D],['a',A]]){$(id).value=fmt(n);$(id).dispatchEvent(new Event('input',{bubbles:true}))}
-    $('t').value='';$('t').dispatchEvent(new Event('input',{bubbles:true}));
-  }
-  if(typeof window.konikOpenTab==='function')window.konikOpenTab(which);
-  window.scrollTo({top:0,behavior:'smooth'});
+ const D=parse($('scanD').value),A=parse($('scanA').value),B=parse($('scanB').value),L=geom();
+ if(!$('scanConfirmed').checked){info('Önce teknik resimdeki değerleri ve ölçü başlangıçlarını doğruladığını onayla.');return}
+ const geoOK=Number.isFinite(L);
+ if(which==='steps'){
+   const n=count();if(n===null||n<1){info('Aktarılacak en az bir kademe olmalı.');return}
+   updateStageTotals();const lengths=scanTotals.map(n=>Number.isFinite(n)?asText(n):'');
+   if(typeof window.konikSetStages!=='function'){info('Kademeli hesaplayıcı yüklenemedi; sayfayı yenile.');return}
+   window.konikSetStages({d:geoOK?asText(D):'',a:geoOK?asText(A):'',mode:'tip',lengths});
+   const missing=lengths.filter(x=>!x).length;
+   info(missing?missing+' yüzey ölçüsü belirsiz; kademeli sekmede elle tamamlayabilirsin.':'Bütün yüzey boyları kademeli sekmeye aktarıldı.',false);
+ }else{
+   if(!geoOK){info('Geçerli çap ve 0°–180° arası toplam açı gerekli.');return}
+   if(which==='tip'){
+     const reference=$('scanBReference').value;
+     if(!Number.isFinite(B)||B<0){info('İlk düz yüzey boyunu gir.');return}
+     let B1=NaN;
+     if(reference==='cone_base')B1=B;
+     else if(reference==='tip')B1=B-L;
+     if(!Number.isFinite(B1)||B1<0){info('B1 referansı belirsiz ya da uçtan toplam boy konik uç boyundan kısa. Başlangıcı düzelt.');return}
+     for(const [id,n] of [['td',D],['ta',A],['tf',B1]]){$(id).value=asText(n);$(id).dispatchEvent(new Event('input',{bubbles:true}))}
+   }else{
+     for(const [id,n] of [['d',D],['a',A]]){$(id).value=asText(n);$(id).dispatchEvent(new Event('input',{bubbles:true}))}
+     $('t').value='';$('t').dispatchEvent(new Event('input',{bubbles:true}));
+   }
+ }
+ if(typeof window.konikOpenTab==='function')window.konikOpenTab(which);
+ window.scrollTo({top:0,behavior:'smooth'});
 }
 $('scanToCone').addEventListener('click',()=>transfer('cone'));
 $('scanToTip').addEventListener('click',()=>transfer('tip'));
+$('scanToSteps').addEventListener('click',()=>transfer('steps'));
+})();
+</script>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const parse=s=>{const v=String(s).trim().replace(/\s/g,'').replace(',','.');return v===''?NaN:Number(v)};
+const fmt=n=>n.toLocaleString('tr-TR',{minimumFractionDigits:3,maximumFractionDigits:3});
+const countEl=$('stepCount'),dEl=$('stepD'),aEl=$('stepA'),modeEl=$('stepMode');
+const holder=$('stepFields'),list=$('stepResults'),err=$('stepInputsError');
+let lengths=['17,912','42,912'],copyText='';
+try{
+ const saved=JSON.parse(localStorage.getItem('konik-kademeli-v4_3')||'null');
+ if(saved&&typeof saved.d==='string'&&typeof saved.a==='string'&&Number.isInteger(saved.n)&&saved.n>=1&&saved.n<=30&&Array.isArray(saved.lengths)){
+   dEl.value=saved.d;aEl.value=saved.a;countEl.value=saved.n;modeEl.value=saved.mode==='segments'?'segments':'tip';
+   lengths=saved.lengths.slice(0,30).map(x=>String(x).slice(0,35));
+ }else{
+   const old=JSON.parse(localStorage.getItem('konik-kademeli-v4_2')||'null');
+   if(old&&Number.isInteger(old.n)&&old.n>=1&&old.n<=30&&Array.isArray(old.lengths)){
+     dEl.value=String(old.d??'');aEl.value=String(old.a??'');countEl.value=old.n;modeEl.value='segments';
+     lengths=old.lengths.slice(0,30).map(x=>String(x).slice(0,35));
+   }
+ }
+}catch(e){}
+function nCount(){const n=Number(countEl.value);return Number.isInteger(n)&&n>=1&&n<=30?n:null}
+function persist(){try{localStorage.setItem('konik-kademeli-v4_3',JSON.stringify({d:dEl.value,a:aEl.value,n:nCount(),mode:modeEl.value,lengths}))}catch(e){}}
+function renderRows(){
+ holder.replaceChildren();const n=nCount();
+ if(n===null){err.textContent='Kademe sayısı 1 ile 30 arasında tam sayı olmalı.';err.style.display='block';calc();return}
+ const mode=modeEl.value;err.style.display='none';
+ $('stepModeHelp').innerHTML=mode==='tip'?'Her kutuya ilgili yüzeyin <b>sivri uçtan itibaren toplam mesafesini</b> gir. Bu değerler yeniden toplanmaz.':'B1 koninin bitiminden 1. yüzey sonuna, B2 bir önceki yüzeyden 2. yüzey sonuna ölçülür. Sonuçlar L eklenerek uçtan hesaplanır.';
+ const fragment=document.createDocumentFragment();
+ for(let i=0;i<n;i++){
+  const index=i+1,card=document.createElement('div');card.className='stage-box';
+  const label=mode==='tip'?`Uçtan ${index}. yüzey boyu (S${index})`:`Düz yüzey boyu (B${index})`;
+  const info=mode==='tip'?'Sivri uçtan doğrudan ölç':'Koninin bitimi / önceki yüzeyden ölç';
+  card.innerHTML=`<div class="stage-head"><strong>${index}. Kademe · ${index}. yüzey</strong><span>${mode==='tip'?'Uçtan toplam':'Ardışık düz boy'}</span></div>
+   <div class="stage-row"><div class="field"><label for="stepB${index}">${label}</label><div class="input-wrap"><input id="stepB${index}" type="text" inputmode="decimal" autocomplete="off" aria-label="${index}. yüzey boyu milimetre"><small>mm</small></div></div>
+   <div class="stage-output"><small>Uçtan ${index}. yüzey</small><strong id="stepOut${index}">—</strong></div></div>
+   <div class="stage-formula" id="stepFormula${index}">${info}</div>`;
+  const input=card.querySelector('input');input.value=lengths[i]??'';
+  input.addEventListener('input',()=>{lengths[i]=input.value;calc()});fragment.appendChild(card);
+ }
+ holder.appendChild(fragment);calc();
+}
+function diagram(n){
+ const svg=$('stepDiagram'),NS='http://www.w3.org/2000/svg';svg.replaceChildren();
+ function el(tag,attrs,text){const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs||{}))e.setAttribute(k,String(v));if(text!==undefined)e.textContent=text;svg.appendChild(e);return e}
+ const shown=Math.min(n||1,6),x0=18,x1=76,w=314,seg=w/shown;
+ el('path',{d:`M${x0} 86 L${x1} 50 L${x1} 122 Z`,fill:'#2e6c9c',stroke:'#8ec9ff','stroke-width':1.8});
+ const heights=[36,44,31,47,38,51];let path=`M${x1} ${86-heights[0]} `;
+ for(let j=0;j<shown;j++){const left=x1+j*seg,right=left+seg,h=heights[j];path+=`L${left} ${86-h} L${right} ${86-h} L${right} ${86+h} L${left} ${86+h} `}
+ path+='Z';el('path',{d:path,fill:'#25425c',stroke:'#b3cee9','stroke-width':1.5,'stroke-linejoin':'round'});
+ el('line',{x1:8,y1:86,x2:409,y2:86,stroke:'#9eb6d2','stroke-dasharray':'5 5',opacity:.55});
+ el('text',{x:18,y:45,fill:'#f6ce93','font-size':12},'Uç');el('text',{x:51,y:149,fill:'#f6ce93','font-size':13,'font-weight':'bold'},'L');
+ for(let j=0;j<shown;j++){
+  const x=x1+(j+.5)*seg;
+  el('text',{x,y:155,fill:'#cde1f8','font-size':12,'text-anchor':'middle'},'Y'+(j+1));
+  if(j!==shown-1)el('line',{x1:x1+(j+1)*seg,y1:34,x2:x1+(j+1)*seg,y2:136,stroke:'#94aec7','stroke-dasharray':'3 5',opacity:.6});
+ }
+ el('text',{x:205,y:175,fill:'#9bd8ff','font-size':11,'text-anchor':'middle'},n>6?'İlk 6 yüzey gösteriliyor · sonuçlarda hepsi var':'Y: uçtan yüzey sonuna toplam boy');
+}
+function calc(){
+ const n=nCount(),D=parse(dEl.value),A=parse(aEl.value),mode=modeEl.value;
+ const geomOK=Number.isFinite(D)&&D>0&&Number.isFinite(A)&&A>0&&A<180;
+ const L=geomOK?(D/2)/Math.tan(A*Math.PI/360):NaN;
+ $('stepL').textContent=geomOK?fmt(L)+' mm':'—';list.replaceChildren();
+ let sum=0,previous=-Infinity,allOK=n!==null,firstBad=null,output=[];
+ if(n!==null){for(let i=0;i<n;i++){
+   const raw=lengths[i]??'',B=parse(raw),thisOK=Number.isFinite(B)&&B>=0;
+   let total=NaN,why='';
+   if(!thisOK)why=(i+1)+'. yüzey için geçerli boy gir.';
+   else if(mode==='tip'){
+     total=B;
+     if(geomOK&&B+1e-7<L){total=NaN;why=(i+1)+'. yüzey boyu konik uç boyundan kısa olamaz.'}
+     else if(B+1e-7<previous){total=NaN;why='Uçtan yüzey boyları sırayla artmalı. ('+(i+1)+'. yüzey)'}
+   }else if(geomOK){sum+=B;total=L+sum}
+   else why='Ardışık boyları uçtan hesaplamak için çap ve açı gerekli.';
+   if(!Number.isFinite(total))allOK=false;
+   if(!firstBad&&why)firstBad=why;
+   if(Number.isFinite(total))previous=total;
+   const formatted=Number.isFinite(total)?fmt(total)+' mm':'—';
+   const out=$('stepOut'+(i+1));if(out)out.textContent=formatted;
+   const formula=$('stepFormula'+(i+1));if(formula)formula.textContent=Number.isFinite(total)?(mode==='tip'?'Uçtan doğrudan = '+formatted:'L + B1'+(i?' + … + B'+(i+1):'')+' = '+formatted):'Eksik veya hatalı ölçü';
+   const row=document.createElement('div');row.className='stage-detail-line';
+   const name=document.createElement('span');name.textContent=(i+1)+'. kademe · uçtan '+(i+1)+'. yüzey';
+   const value=document.createElement('strong');value.textContent=formatted;row.append(name,value);list.append(row);
+   output.push({input:B,total});
+ }}
+ const last=n!==null?output.at(-1)?.total:NaN;
+ const finalOK=allOK&&Number.isFinite(last)&&(!geomOK?mode==='tip':true);
+ $('stepLast').innerHTML=Number.isFinite(last)?fmt(last)+' <span>mm</span>':'— <span>mm</span>';
+ $('stepCopy').disabled=!finalOK;
+ let message=firstBad||'';
+ if(!geomOK&&mode==='tip')message=(message?message+' ':'')+'Çap/açı eksik: girilen uçtan boylar gösterilir ama konik payı hesaplanmaz.';
+ err.textContent=message;err.style.display=message?'block':'none';
+ copyText='';
+ if(finalOK){
+  copyText='KADEMELİ TAKIM — UÇTAN YÜZEY BOYLARI\nUç çapı: '+(Number.isFinite(D)?'Ø'+fmt(D)+' mm':'belirsiz')+'\nToplam uç açısı: '+(Number.isFinite(A)?fmt(A)+'°':'belirsiz')+'\nKonik uç boyu (L): '+(geomOK?fmt(L)+' mm':'hesaplanamadı')+'\n'+output.map((r,i)=>(i+1)+'. kademe: uçtan '+(i+1)+'. yüzey = '+fmt(r.total)+' mm').join('\n');
+ }
+ diagram(n);persist();
+}
+countEl.addEventListener('input',renderRows);
+modeEl.addEventListener('change',renderRows);
+[dEl,aEl].forEach(e=>e.addEventListener('input',calc));
+$('stepReset').addEventListener('click',()=>{dEl.value='16';aEl.value='140';countEl.value='2';modeEl.value='tip';lengths=['17,912','42,912'];renderRows()});
+$('stepCopy').addEventListener('click',async()=>{
+ if(!copyText)return;
+ try{await navigator.clipboard.writeText(copyText);$('stepCopy').textContent='Kopyalandı ✓';setTimeout(()=>$('stepCopy').textContent='Tüm sonuçları kopyala',1600)}
+ catch(e){window.prompt('Sonuçları kopyala:',copyText)}
+});
+window.konikSetStages=({d,a,mode,lengths:incoming})=>{
+ if(typeof d==='string')dEl.value=d;if(typeof a==='string')aEl.value=a;
+ modeEl.value=mode==='segments'?'segments':'tip';
+ const trimmed=Array.isArray(incoming)?incoming.slice(0,30):[];
+ if(!trimmed.length)return;
+ lengths=trimmed.map(v=>String(v??''));countEl.value=lengths.length;renderRows();
+};
+renderRows();
 })();
 </script>
 </body>
