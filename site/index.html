@@ -132,6 +132,7 @@ main{max-width:520px;margin:auto}.eyebrow{color:var(--blue);font-size:12px;font-
 @media (max-width:370px){.scan-stage-total strong{font-size:16px}.scanStageEditor{padding:10px}.select-input{font-size:12px}}
 
 
+.shaft-global{border-color:#bb8d3c}.shaft-global h2{color:#f3d6a0}.shaft-global .stage-top-grid{margin-top:12px}.shaft-step-heading{font-size:15px;margin:16px 0 10px;color:#e2ecfa}
 /* v4.6 geometry editor */
 .stage-geometry{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stage-geometry .field input{font-size:19px}.transition-box{margin-top:10px;padding:10px;border:1px solid #42648c;border-radius:10px;background:#0c1a2d}.transition-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.transition-grid label{font-size:10px;color:#b6cce7;display:block;margin-bottom:5px}.transition-grid input,.transition-grid select{width:100%;min-width:0;background:#0c1628;color:#fff;border:1px solid #60728e;border-radius:8px;padding:9px 5px;font-size:15px}.transition-note{font-size:11px;color:#c3e5fc;margin:7px 0 0}.transition-actions{display:flex;gap:8px;margin-top:9px}.transition-actions button{font-size:11px;padding:8px}.transition-delete{color:#ffd6c6}.step-graph-note{font-size:11px;color:#a9cce8;margin-top:7px}@media(max-width:380px){.transition-grid input,.transition-grid select{font-size:13px}}
 </style>
@@ -139,6 +140,12 @@ main{max-width:520px;margin:auto}.eyebrow{color:var(--blue);font-size:12px;font-
 <body>
 <main>
 <header class="head"><div class="eyebrow">Torna • CNC • Geometri</div><h1>Konik Hesaplayıcı</h1><p>Konik alın boyunu, uçtan toplam boyları ve kademeli takım ölçülerini hesapla; teknik resmi kamerayla tara. Hesaplamalar çevrimdışı, yapay zekâ taraması internetle çalışır.</p></header>
+<section class="card shaft-global" aria-label="Şaft ve takım tam boyu">
+<h2>1. Şaft çapı ve takım tam boyu</h2>
+<p class="help">Önce takımın arka ham çapını ve sivri uçtan en arka yüzeye kadar tam boyunu gir. Bu iki değer dört sekmede ortaktır.</p>
+<div class="stage-top-grid"><div class="field"><label for="shaftD">Şaft çapı (Ø2–Ø40 mm)</label><div class="input-wrap"><input id="shaftD" type="text" inputmode="decimal" value="25" autocomplete="off"><small>mm</small></div></div><div class="field"><label for="shaftTotal">Takım tam boyu (L)</label><div class="input-wrap"><input id="shaftTotal" type="text" inputmode="decimal" value="75" autocomplete="off"><small>mm</small></div></div></div>
+<p id="shaftError" class="stage-error" role="alert"></p>
+</section>
 <nav class="tabbar" role="tablist" aria-label="Hesaplama seçimi">
 <button class="tab active" id="tabCone" type="button" role="tab" aria-controls="calcCone" aria-selected="true">Konik alın</button>
 <button class="tab" id="tabTip" type="button" role="tab" aria-controls="calcTip" aria-selected="false">Toplam boy</button>
@@ -234,11 +241,11 @@ main{max-width:520px;margin:auto}.eyebrow{color:var(--blue);font-size:12px;font-
 <div id="calcSteps" role="tabpanel" aria-labelledby="tabSteps" hidden>
 <section class="card"><h2>Kademeli — açı ve radiuslu geçişler</h2>
 <p class="tip-intro">Sivri uç sağdadır. Her düz yüzeyin boyunu, çapını ve ardından gelen geçişleri gir. <b>Açı seçildiğinde pahın eksenel boyu otomatik hesaplanır.</b> Yüzey ölçüleri sivri uçtan, düz yüzeyin <b>sol ucuna</b> kadar alınır.</p>
-<div class="stage-top-grid"><div class="field"><label for="stepD">Uç çapı (Ø)</label><div class="input-wrap"><input id="stepD" type="text" inputmode="decimal" value="8"><small>mm</small></div></div><div class="field"><label for="stepA">Uç toplam açısı</label><div class="input-wrap"><input id="stepA" type="text" inputmode="decimal" value="140"><small>°</small></div></div></div>
+<h3 class="shaft-step-heading">2. Ön çap, uç açısı ve kademeler</h3><div class="stage-top-grid"><div class="field"><label for="stepD">Uç çapı (Ø)</label><div class="input-wrap"><input id="stepD" type="text" inputmode="decimal" value="8"><small>mm</small></div></div><div class="field"><label for="stepA">Uç toplam açısı</label><div class="input-wrap"><input id="stepA" type="text" inputmode="decimal" value="140"><small>°</small></div></div></div>
 <div class="stage-count-wrap field"><label for="stepCount">Kademe sayısı</label><div class="input-wrap"><input id="stepCount" type="number" min="1" max="20" step="1" value="3"></div></div>
 <div id="stepFields"></div><p id="stepInputsError" class="stage-error" role="alert"></p><div class="actions"><button type="button" id="stepReset">Örnek ölçüleri getir</button></div></section>
-<section class="card results"><div class="kicker">SON YÜZEYİN SİVRİ UÇTAN BOYU</div><div class="big" id="stepLast">— <span>mm</span></div><div class="minor"><span>Konik uç boyu (L)</span><strong id="stepL">—</strong></div><div id="stepResults" class="stage-details"></div><div class="actions"><button class="primary" type="button" id="stepCopy">Tüm sonuçları kopyala</button></div></section>
-<section class="card"><h2>Teknik şema — ölçüler sivri uçtan</h2><svg id="stepDiagram" viewBox="0 0 720 390" role="img" aria-label="Sivri uçtan ölçülmüş yüzeyler ve açı veya radiuslu kademe geçişleri"></svg><p class="detail-note">Yeşil ölçü çizgileri sivri uçtan düz yüzeylerin sol uçlarına gider. Pah ve radius geometrisi girilen değerlerle oluşturulur. Çizim ekrana sığması için orantılı küçültülür; CNC öncesi ölçüleri kontrol et.</p><div class="actions"><button type="button" id="stepSave">Şemayı PNG kaydet</button></div></section>
+<section class="card results"><div class="kicker">SON YÜZEYİN SİVRİ UÇTAN BOYU</div><div class="big" id="stepLast">— <span>mm</span></div><div class="minor"><span>Konik uç boyu (L)</span><strong id="stepL">—</strong></div><div class="minor"><span>Şaft düz bölümünün kalan boyu</span><strong id="shaftRemaining">—</strong></div><div class="minor"><span>Takım tam boyu</span><strong id="shaftFullResult">—</strong></div><div id="stepResults" class="stage-details"></div><div class="actions"><button class="primary" type="button" id="stepCopy">Tüm sonuçları kopyala</button></div></section>
+<section class="card"><h2>Teknik şema — ölçüler sivri uçtan</h2><svg id="stepDiagram" viewBox="0 0 720 390" role="img" aria-label="Sivri uçtan ölçülmüş yüzeyler ve açı veya radiuslu kademe geçişleri"></svg><p class="detail-note">Yeşil ölçü çizgileri sivri uçtan düz yüzeylerin sol uçlarına gider. Şaftın ayrı bir yüzey ölçüsü çizilmez; yalnızca takımın tam boyu gösterilir. Pah ve radius geometrisi girilen değerlerle oluşturulur. Çizim ekrana sığması için orantılı küçültülür; CNC öncesi ölçüleri kontrol et.</p><div class="actions"><button type="button" id="stepSave">Şemayı PNG kaydet</button></div></section>
 <section class="card"><h2>Hesaplama kuralı</h2><div class="formula">Konik uç: L = (D ÷ 2) ÷ tan(A ÷ 2)<br>Açılı geçişin eksenel boyu = |Øson − Øilk| ÷ (2 × tan(geçiş açısı))<br>90° dik omuz: eksenel boy = 0<br>Radius: R, düz yüzeye teğet çeyrek yay + gerekirse dik omuz; eksenel yay boyu = R</div><p class="tip-note">Bir kademede 0,20 × 45° pah ardından 90° omuz varsa <b>iki geçiş</b> ekle: önce ara çapa 45°, ardından sonraki kademe çapına 90°. Örneğin Ø4,50 → Ø4,90 için 45° pahın eksenel boyu 0,20 mm'dir. Radius burada tanımlı çeyrek yay geometrisidir; farklı teğetlikler ayrı hesap gerektirir.</p></section></div>
 <div id="calcScan" role="tabpanel" aria-labelledby="tabScan" hidden>
 <section class="card">
@@ -269,6 +276,8 @@ main{max-width:520px;margin:auto}.eyebrow{color:var(--blue);font-size:12px;font-
   <div class="stage-pill" id="scanDrawingKind">Resim türü: kontrol bekliyor</div>
   <div class="scanStageEditor" id="scanFeaturePanel" hidden><h3>Okunan açı / pah / radius işaretleri</h3><div id="scanFeatureRows"></div><p class="scanStageNotes">Yalnızca resimde açıkça görülen ölçüler listelenir; belirsiz referanslar tahmin edilmez.</p></div>
   <div class="fields" style="margin-top:13px">
+    <div class="field"><label for="scanShaft">Resimdeki şaft çapı (varsa)</label><div class="input-wrap"><input id="scanShaft" type="text" inputmode="decimal" placeholder="Okunamadı"><small>mm</small></div></div>
+    <div class="field"><label for="scanOverall">Resimdeki takım tam boyu (varsa)</label><div class="input-wrap"><input id="scanOverall" type="text" inputmode="decimal" placeholder="Okunamadı"><small>mm</small></div></div>
     <div class="field"><label for="scanD">Uç çapı (D), mm</label><div class="input-wrap"><input id="scanD" type="text" inputmode="decimal" placeholder="Örn. 4,50"><small>mm</small></div></div>
     <div class="field"><label for="scanA">Toplam uç açısı (A)</label><div class="input-wrap"><input id="scanA" type="text" inputmode="decimal" placeholder="Örn. 140"><small>°</small></div></div>
     <div class="field"><label for="scanB">İlk düz yüzey ölçüsü (B1)</label><div class="input-wrap"><input id="scanB" type="text" inputmode="decimal" placeholder="Okunamadı"><small>mm</small></div></div>
@@ -296,6 +305,18 @@ main{max-width:520px;margin:auto}.eyebrow{color:var(--blue);font-size:12px;font-
 </div>
 <p class="bottom">Sayısal hesaplar cihaz üzerinde ve internetsiz çalışır; fotoğraftan yapay zekâ ile ölçü okuma internet gerektirir. CNC işleme öncesi teknik resmi, toleransları, Z sıfırını ve ölçü referanslarını doğrula.</p>
 </main>
+<script>
+/* v4.7 — four tabs share shaft and full length; these do not replace the front diameter. */
+(function(){
+ const shaft=document.getElementById('shaftD'),full=document.getElementById('shaftTotal'),error=document.getElementById('shaftError');
+ const parse=v=>{const n=Number(String(v||'').trim().replace(',','.'));return String(v||'').trim()!==''&&Number.isFinite(n)?n:NaN};
+ try{const x=JSON.parse(localStorage.getItem('konik-shaft-v47')||'null');if(x){shaft.value=x.d??'25';full.value=x.l??'75'}}catch(e){}
+ function validate(){const d=parse(shaft.value),l=parse(full.value);let msg='';if(!(d>=2&&d<=40))msg='Şaft çapı 2–40 mm arasında olmalı.';else if(!(l>0))msg='Takım tam boyu sıfırdan büyük olmalı.';error.textContent=msg;error.style.display=msg?'block':'none';return !msg}
+ window.konikShaft={get:()=>({d:parse(shaft.value),l:parse(full.value),valid:validate()}),set:(d,l)=>{if(d!==null&&d!==undefined&&d!=='')shaft.value=String(d);if(l!==null&&l!==undefined&&l!=='')full.value=String(l);changed()}};
+ function changed(){validate();try{localStorage.setItem('konik-shaft-v47',JSON.stringify({d:shaft.value,l:full.value}))}catch(e){}window.dispatchEvent(new Event('konik-shaft-change'))}
+ shaft.addEventListener('input',changed);full.addEventListener('input',changed);validate();
+})();
+</script>
 <script>
 (function(){
 'use strict';
@@ -479,6 +500,7 @@ function updateStageTotals(){
 }
 function showResults(r){
  lastScan=r;
+ $('scanShaft').value=asText(r.shaft_diameter_mm);$('scanOverall').value=asText(r.overall_length_mm);
  $('scanD').value=asText(r.diameter_mm);$('scanA').value=asText(r.total_angle_deg);$('scanB').value=asText(r.b1_mm);
  const refList=['cone_base','tip','other','unclear'];$('scanBReference').value=refList.includes(r.b1_reference)?r.b1_reference:'unclear';
  $('scanRef').textContent='B1 başlangıcı ve güven: '+({high:'yüksek',medium:'orta',low:'düşük'}[r.confidence]||'belirsiz')+'. Ölçüler otomatik olarak uygulanmaz.';
@@ -527,6 +549,7 @@ function info(message,warn=true){const e=$('scanTransferInfo');e.textContent=mes
 function transfer(which){
  const D=parse($('scanD').value),A=parse($('scanA').value),B=parse($('scanB').value),L=geom();
  if(!$('scanConfirmed').checked){info('Önce teknik resimdeki değerleri ve ölçü başlangıçlarını doğruladığını onayla.');return}
+ window.konikShaft?.set($('scanShaft').value,$('scanOverall').value);
  const geoOK=Number.isFinite(L);
  if(which==='steps'){
    const n=count();if(n===null||n<1){info('Aktarılacak en az bir kademe olmalı.');return}
@@ -584,16 +607,21 @@ function render(){holder.replaceChildren();stages.forEach((s,i)=>{
  });calc()}
 function svgEl(svg,tag,attrs={},text){const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));if(text!==undefined)e.textContent=text;svg.append(e);return e}
 function draw(geom){const svg=$('stepDiagram');svg.replaceChildren();if(!geom)return;
- const {parts,marks,L,D,A,total}=geom,mid=120,usable=640,scale=Math.min(usable/Math.max(total,1),65/Math.max(...parts.map(p=>p.r),D/2,1)),X=x=>685-x*scale,Y=r=>mid-r*scale;
+ const {parts,marks,L,D,A,total,shaftD,fullLength}=geom,mid=120,usable=640,scale=Math.min(usable/Math.max(fullLength,1),65/Math.max(...parts.map(p=>p.r),shaftD/2,D/2,1)),X=x=>685-x*scale,Y=r=>mid-r*scale;
  let top=`M${X(0)} ${mid}`;for(const p of parts){if(p.kind==='tip')top+=` L${X(p.end)} ${Y(p.r)}`;else if(p.kind==='flat')top+=` L${X(p.end)} ${Y(p.r)}`;else if(p.kind==='angle')top+=` L${X(p.end)} ${Y(p.r)}`;else if(p.kind==='radius'){const sx=X(p.start),sy=Y(p.fromR),ex=X(p.end),ey=Y(p.arcR);top+=` Q${ex} ${sy} ${ex} ${ey}`;if(Math.abs(p.r-p.arcR)>1e-8)top+=` L${ex} ${Y(p.r)}`}}
  let bot='';for(let k=parts.length-1;k>=0;k--){const p=parts[k],prev=k>0?parts[k-1]:null,previousR=prev?prev.r:0,prevX=prev?prev.end:0;const y=r=>mid+(mid-Y(r));if(p.kind==='radius'){if(Math.abs(p.r-p.arcR)>1e-8)bot+=` L${X(p.end)} ${y(p.arcR)}`;bot+=` Q${X(p.end)} ${y(p.fromR)} ${X(p.start)} ${y(p.fromR)}`}else bot+=` L${X(prevX)} ${y(previousR)}`}
  svgEl(svg,'path',{d:top+` L${X(parts.at(-1).end)} ${mid+(mid-Y(parts.at(-1).r))}`+bot+' Z',fill:'#1c5680','fill-opacity':'.55',stroke:'#70c5ff','stroke-width':'2.5','stroke-linejoin':'round'});
  svgEl(svg,'line',{x1:15,y1:mid,x2:704,y2:mid,stroke:'#b7c4d4','stroke-dasharray':'7 6',opacity:'.6'});
  svgEl(svg,'text',{x:X(0)-14,y:mid-16,fill:'#f8bf66','font-size':14,'text-anchor':'end'},fmt(A)+'°');
- const ann=parts.filter(p=>p.kind==='angle'||p.kind==='radius');ann.forEach((p,i)=>{const x=X((p.start+p.end)/2),y=Y(p.r)-10;svgEl(svg,'text',{x,y:y-7-(i%2)*8,fill:'#ffcd81','font-size':12,'text-anchor':'middle'},p.kind==='angle'?fmt(p.angle)+'°':'R'+fmt(p.radius))});
- const labels=marks.length,base=mid+Math.max(...parts.map(p=>p.r))*scale+22;
+ const ann=parts.filter(p=>(p.kind==='angle'||p.kind==='radius')&&!(p.kind==='angle'&&p.start===p.end&&p.end===marks.at(-1)?.x));ann.forEach((p,i)=>{const x=X((p.start+p.end)/2),y=Y(p.r)-10;svgEl(svg,'text',{x,y:y-7-(i%2)*8,fill:'#ffcd81','font-size':12,'text-anchor':'middle'},p.kind==='angle'?fmt(p.angle)+'°':'R'+fmt(p.radius))});
+ const labels=marks.length,base=mid+Math.max(...parts.map(p=>p.r),shaftD/2)*scale+22;
  marks.forEach((m,i)=>{const yy=Math.min(366,base+25+i*27),xx=X(m.x),tip=X(0);svgEl(svg,'line',{x1:xx,y1:Y(m.r)+3,x2:xx,y2:yy+4,stroke:'#5de3a1','stroke-width':1.3});svgEl(svg,'line',{x1:tip,y1:mid+8,x2:tip,y2:yy+4,stroke:'#5de3a1','stroke-width':1.3});svgEl(svg,'line',{x1:xx,y1:yy,x2:tip,y2:yy,stroke:'#5de3a1','stroke-width':2});svgEl(svg,'text',{x:(xx+tip)/2,y:yy-6,fill:'#dcfdea','font-size':12,'text-anchor':'middle'},`${i+1}. yüzey: ${fmt(m.x)} mm`)});
- svgEl(svg,'text',{x:25,y:20,fill:'#b9d7f4','font-size':12},`Uç Ø${fmt(D)} · ${marks.length} yüzey · ${fmt(total)} mm`);
+ const rear=X(fullLength),tip=X(0),fullY=Math.min(381,base+25+marks.length*27);
+ svgEl(svg,'line',{x1:rear,y1:Y(shaftD/2),x2:rear,y2:fullY+3,stroke:'#8dbdf4','stroke-width':1.2});
+ svgEl(svg,'line',{x1:rear,y1:fullY,x2:tip,y2:fullY,stroke:'#8dbdf4','stroke-width':2});
+ svgEl(svg,'text',{x:(rear+tip)/2,y:fullY-6,fill:'#b9d7f4','font-size':13,'text-anchor':'middle'},`Tam boy: ${fmt(fullLength)} mm`);
+ svgEl(svg,'text',{x:Math.max(20,rear+8),y:Y(shaftD/2)-8,fill:'#e2eaf8','font-size':12},`Şaft Ø${fmt(shaftD)}`);
+ svgEl(svg,'text',{x:25,y:20,fill:'#b9d7f4','font-size':12},`Uç Ø${fmt(D)} · ${marks.length} yüzey · ${fmt(fullLength)} mm`);
 }
 function calc(){const D=parse(dEl.value),A=parse(aEl.value),L=(D>0&&A>0&&A<180)?(D/2)/Math.tan(A*Math.PI/360):NaN;let errorsList=[],parts=[],marks=[],pos=L,prev=D/2;
  if(!Number.isFinite(L))errorsList.push('Uç çapı ve 0°–180° arasında uç açısı gir.');else parts.push({kind:'tip',end:L,r:D/2});
@@ -608,9 +636,20 @@ function calc(){const D=parse(dEl.value),A=parse(aEl.value),L=(D>0&&A>0&&A<180)?
  if(part&&Number.isFinite(pos)){pos+=dx;parts.push(part);prev=target/2}const note=$(`transitionResult${i}-${j}`);if(note)note.textContent=Number.isFinite(dx)?`Geçiş eksenel boyu: ${fmt(dx)} mm · Ø${fmt(target)}`:'Geçiş için geçerli değer gir.';
  });}
  });
+ const shaft=window.konikShaft?.get()||{d:NaN,l:NaN,valid:false};
+ if(!shaft.valid)errorsList.push('Şaft çapı veya takım tam boyu geçersiz.');
+ const remaining=shaft.l-pos;
+ if(Number.isFinite(remaining)&&remaining<-1e-6)errorsList.push(`Yüzeyler ve geçişler tam boyu ${fmt(-remaining)} mm aşıyor.`);
+ if(Number.isFinite(shaft.d)&&shaft.d>0&&Number.isFinite(pos)&&Number.isFinite(shaft.l)&&remaining>=-1e-6){
+   if(Math.abs(shaft.d/2-prev)>1e-7)parts.push({kind:'angle',angle:90,start:pos,end:pos,r:shaft.d/2});
+   parts.push({kind:'flat',end:shaft.l,r:shaft.d/2});
+ }
+ $('shaftRemaining').textContent=remaining>=-1e-6&&Number.isFinite(remaining)?fmt(Math.max(0,remaining))+' mm':'—';
+ $('shaftFullResult').textContent=Number.isFinite(shaft.l)?fmt(shaft.l)+' mm':'—';
  $('stepL').textContent=Number.isFinite(L)?fmt(L)+' mm':'—';results.replaceChildren();marks.forEach((m,i)=>{const row=document.createElement('div');row.className='stage-detail-line';const label=document.createElement('span');label.textContent=`${i+1}. yüzey · uçtan`;const value=document.createElement('strong');value.textContent=fmt(m.x)+' mm';row.append(label,value);results.append(row)});
- const valid=!errorsList.length&&marks.length===stages.length;errors.textContent=errorsList.slice(0,4).join(' ');errors.style.display=errorsList.length?'block':'none';const last=marks.at(-1)?.x;$('stepLast').innerHTML=valid?fmt(last)+' <span>mm</span>':'— <span>mm</span>';$('stepCopy').disabled=!valid;copyText=valid?`KADEMELİ — UÇTAN ÖLÇÜLER\nUç: Ø${fmt(D)} / ${fmt(A)}°\nKonik boy: ${fmt(L)} mm\n`+marks.map((m,i)=>`${i+1}. yüzey: ${fmt(m.x)} mm`).join('\n'):'';
- lastGeom=valid?{parts,marks,L,D,A,total:pos}:null;draw(lastGeom);persist();}
+ const valid=!errorsList.length&&marks.length===stages.length;errors.textContent=errorsList.slice(0,4).join(' ');errors.style.display=errorsList.length?'block':'none';const last=marks.at(-1)?.x;$('stepLast').innerHTML=valid?fmt(last)+' <span>mm</span>':'— <span>mm</span>';$('stepCopy').disabled=!valid;copyText=valid?`KADEMELİ — UÇTAN ÖLÇÜLER\nŞaft Ø${fmt(shaft.d)} · Tam boy ${fmt(shaft.l)} mm\nUç: Ø${fmt(D)} / ${fmt(A)}°\nKonik boy: ${fmt(L)} mm\n`+marks.map((m,i)=>`${i+1}. yüzey: ${fmt(m.x)} mm`).join('\n'):'';
+ lastGeom=valid?{parts,marks,L,D,A,total:pos,shaftD:shaft.d,fullLength:shaft.l}:null;draw(lastGeom);persist();}
+window.addEventListener('konik-shaft-change',calc);
 countEl.addEventListener('change',()=>{const n=Number(countEl.value);if(!Number.isInteger(n)||n<1||n>20){errors.textContent='1–20 kademe gir.';errors.style.display='block';return}while(stages.length<n){const last=stages.at(-1);last.ts=[{type:'angle',value:'90',to:String(parse(last.d)+2)}];stages.push({d:String(parse(last.d)+2),b:'10',ts:[]})}stages=stages.slice(0,n);stages.at(-1).ts=[];render()});[dEl,aEl].forEach(x=>x.addEventListener('input',calc));
 $('stepReset').addEventListener('click',()=>{dEl.value='8';aEl.value='140';stages=sample();countEl.value=stages.length;render()});$('stepCopy').addEventListener('click',async()=>{if(!copyText)return;try{await navigator.clipboard.writeText(copyText)}catch(e){window.prompt('Sonuçları kopyala',copyText)}});
 $('stepSave').addEventListener('click',()=>{if(!lastGeom)return;const svg=$('stepDiagram'),clone=svg.cloneNode(true);clone.setAttribute('xmlns',NS);const xml=new XMLSerializer().serializeToString(clone),url=URL.createObjectURL(new Blob([xml],{type:'image/svg+xml;charset=utf-8'})),img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=1440;c.height=780;const ctx=c.getContext('2d');ctx.fillStyle='#0b1626';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);c.toBlob(b=>{if(!b)return;const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='konik-kademe-semasi.png';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)},'image/png')};img.src=url});
